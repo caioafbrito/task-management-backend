@@ -1,0 +1,32 @@
+{
+  "name": "task-management-backend",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && tsup src/index.ts --format cjs,esm --minify --dts",
+    "start": "tsx src/index.ts",
+    "start:dev": "tsx --watch src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-work:caioafbrito/task-management-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.13",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "zod": "^4.0.5"
+  }
+}
