@@ -2,6 +2,7 @@
   "name": "task-management-backend",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && tsup src/index.ts --format cjs,esm --minify --dts",
@@ -17,7 +18,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/helmet": "^0.0.48",
     "@types/node": "^24.0.13",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
@@ -25,8 +29,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "zod": "^4.0.5"
   }
 }
