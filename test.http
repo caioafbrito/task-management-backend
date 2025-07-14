@@ -1,0 +1,7 @@
+@apiPath = /api/v1
+@host = http://localhost:4000
+
+@apiUrl = {{host}}{{apiPath}}
+
+### Health Check
+GET {{apiUrl}}/healthcheck
