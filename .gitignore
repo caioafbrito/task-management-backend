@@ -17,6 +17,9 @@ pids/
 *.seed
 *.pid.lock
 
+# Local testing
+*.http
+
 # Optional npm cache directory
 .npm/
 
