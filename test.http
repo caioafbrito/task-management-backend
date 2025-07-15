@@ -5,3 +5,6 @@
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
+
+### Tasks
+GET {{apiUrl}}/task

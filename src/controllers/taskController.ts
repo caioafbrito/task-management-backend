@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
+import pool from "../db/connection.js";
 
-export const getAllTasksByUserId = (req: Request, res: Response) => {
+export const getAllTasksByUserId = async (req: Request, res: Response) => {
     try {
-        console.log("In the controller.")
-        return res.status(200).send("Working fine ;)");
+        const query = await pool.query(`SELECT * FROM tasks`);
+        console.log(query.rows);
+        return res.status(200).send();
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -11,5 +13,9 @@ export const getAllTasksByUserId = (req: Request, res: Response) => {
         });
     }
 };
+
+async function createTable() {
+
+}
 
 
