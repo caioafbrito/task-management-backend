@@ -4,11 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import https from "https";
-import healthCheckRouter from "./routes/healthCheckRoute.js";
-import taskRouter from "./routes/taskRoute.js";
+import routers from "./routes/index.js";
 
 const PORT = process.env.PORT ?? 3000;
-const BASE_API_PATH = process.env.BASE_API_PATH ?? "/api/v1";
 
 const app = express();
 
@@ -23,7 +21,7 @@ app.use(express.json());
 app.use(cors(), helmet(), compression()); // Applying Globally
 
 // Consuming API Routes
-app.use(BASE_API_PATH, healthCheckRouter, taskRouter); // Applying to Specific Route
+app.use(routers); // Applying to Specific Route
 
 // Listening to My Server PORT
 app.listen(PORT, () => {
