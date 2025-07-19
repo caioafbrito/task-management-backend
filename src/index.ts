@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import * as cookieParser from "cookie-parser";
 import errorHandler from "middlewares/error-handler.js";
 import routers from "./routes/index.js";
 import http from "http";
@@ -31,7 +32,7 @@ if (isProd) {
 
 // === Middlewares ===
 app.use(express.json());
-app.use(cors(), helmet(), compression());
+app.use(cors(), helmet(), cookieParser.default(), compression());
 
 // === Routers ===
 app.use(routers);

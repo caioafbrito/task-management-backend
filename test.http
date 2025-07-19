@@ -26,7 +26,12 @@ Content-Type: application/json
     "password": "12345"
 }
 
+### Refresh Access Token
+GET {{apiUrl}}/auth/refresh-access-token
+Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjA5NCwiZXhwIjoxNzUzNTUwODk0fQ.6A7IF5pAlT9LcaAGyy7cshPCAKleDH6pLrwxIKmRLfA
+Content-Type: application/json
+
 ### Tasks
 GET {{apiUrl}}/task
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MjkzNjQwNiwiZXhwIjoxNzUyOTM3MDA2fQ.X3h5Rd8QyzdJyUCn9qr8s3KNiKAB3-c_tRs22k65IWo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjMwMSwiZXhwIjoxNzUyOTQ2OTAxfQ.a-3dt8p-L4USM_jKRaSQf-MDcSQeOkiCD8qKxcNKu24
 Content-Type: application/json
