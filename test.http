@@ -22,7 +22,8 @@ POST {{apiUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "caio@mail.com"
+    "email": "caio@mail.com",
+    "password": "1234"
 }
 
 ### Tasks

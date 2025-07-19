@@ -1,45 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "utils/error.js";
 import { loginUser } from "services/auth/authService.js";
-import { z } from "zod";
+import { registerUser } from "services/user/userService.js";
 import { fromZodError } from "zod-validation-error/v4";
-import { UserNotFoundError } from "services/user/userError.js";
+import { UserNotFoundError, DuplicatedUserEmailError } from "services/user/userError.js";
 import { InvalidCredentialsError } from "services/auth/authError.js";
-
-const RegisterBody = z.object({
-    name: z.string().max(255),
-    age: z.number().gt(0),
-    email: z.email().max(255),
-    password: z.string(),
-    '2fa_enabled': z.boolean().optional().default(false),
-});
+import { CreateUserDto, AuthenticateUserDto } from "dtos/user.dto.js";
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { body } = req;
-        const result = RegisterBody.safeParse(body);
+        const result = CreateUserDto.safeParse(body);
         if (!result.success) throw new ApiError(fromZodError(result.error).toString(), 422);
-        const { name, age, email, password } = result.data;
-        // Register logic
-        return res.status(200).send();
+        const registeredUser = await registerUser(result.data);
+        return res.status(201).send(registeredUser);
     } catch (error) {
-        // Error handling
-        return res.status(500).send();
+        if (error instanceof DuplicatedUserEmailError) {
+            next(new ApiError(error.message, 409));
+        } else if (error instanceof ApiError) {
+            next(error);
+        } else {
+            next(new ApiError("Unknown Error", 500));
+        }
     }
 }
 
-const LoginBody = z.object({
-    email: z.email("Invalid e-mail provided."),
-    password: z.string()
-});
 
 export const loginController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { body } = req;
-        const result = LoginBody.safeParse(body);
+        const result = AuthenticateUserDto.safeParse(body);
         if (!result.success) throw new ApiError(fromZodError(result.error).toString(), 422);
-        const { email, password } = result.data;
-        const { accessToken, refreshToken } = await loginUser(email, password);
+        const { accessToken, refreshToken } = await loginUser(result.data);
         return res.status(200).send({
             accessToken,
             refreshToken

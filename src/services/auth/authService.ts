@@ -2,8 +2,10 @@ import { findUserByEmail } from "../user/userService.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
+import type { AuthenticateUserDto } from "dtos/user.dto.js";
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (authData: AuthenticateUserDto) => {
+    const {email, password} = authData;
     const { password: hashedPass, id: userId } = await findUserByEmail(email);
 
     const isPassCorrect = await bcrypt.compare(password, hashedPass);
