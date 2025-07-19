@@ -4,10 +4,9 @@ import jwt from "jsonwebtoken";
 
 export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     let authHeader = req.headers.authorization || req.headers.Authorization;
-    if (!authHeader) return next(new ApiError("Authentication header missing.", 400));
+    if (!authHeader) return next(new ApiError("Authorization header missing.", 400));
     if (Array.isArray(authHeader)) authHeader = authHeader[0];
     const [, token] = authHeader.split(" ");
-    console.log(token);
     try {
         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
         req.user = payload;
@@ -19,6 +18,8 @@ export const authCheck = async (req: Request, res: Response, next: NextFunction)
             next(new ApiError("Invalid token or malformed request.", 401));
         } else if (error instanceof jwt.NotBeforeError) {
             next(new ApiError("Token is not yet active", 401));
+        } else if (error instanceof ApiError) {
+            next(error);
         } else {
             next(new ApiError("An unexpected authentication error occurred.", 500));
         }
