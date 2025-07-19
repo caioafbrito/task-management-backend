@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "utils/error.js";
-import { loginUser } from "services/auth/authService.js";
-import { registerUser } from "services/user/userService.js";
+import { registerUser, loginUser } from "services/index.js";
 import { fromZodError } from "zod-validation-error/v4";
-import { UserNotFoundError, DuplicatedUserEmailError } from "services/user/userError.js";
-import { InvalidCredentialsError } from "services/auth/authError.js";
+import { DuplicatedUserEmailError, UserNotFoundError, InvalidCredentialsError } from "services/indexError.js";
 import { CreateUserDto, AuthenticateUserDto } from "dtos/user.dto.js";
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
