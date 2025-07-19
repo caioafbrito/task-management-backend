@@ -6,5 +6,24 @@
 ### Health Check
 GET {{apiUrl}}/healthcheck
 
+### Register
+POST {{apiUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "name": "Caio Brito",
+    "age": 19,
+    "email": "caio@mail.com",
+    "password": "12345"
+}
+
+### Login
+POST {{apiUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "caio@mail.com"
+}
+
 ### Tasks
 GET {{apiUrl}}/task

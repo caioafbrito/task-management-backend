@@ -21,10 +21,12 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/helmet": "^0.0.48",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.13",
     "@types/pg": "^8.15.4",
     "drizzle-kit": "^0.31.4",
@@ -34,13 +36,16 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "drizzle-orm": "^0.44.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
-    "zod": "^4.0.5"
+    "zod": "^4.0.5",
+    "zod-validation-error": "^3.5.3"
   }
 }
