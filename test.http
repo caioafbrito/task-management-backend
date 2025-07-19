@@ -3,6 +3,10 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk1MDUzNSwiZXhwIjoxNzUyOTUxMTM1fQ.TN5xwEYPQFtiI7Tb4Oolbwg4xi9vSXiU-fwC35VAJgg
+
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjA5NCwiZXhwIjoxNzUzNTUwODk0fQ.6A7IF5pAlT9LcaAGyy7cshPCAKleDH6pLrwxIKmRLfA
+
 ### Health Check
 GET {{apiUrl}}/healthcheck
 
@@ -28,10 +32,28 @@ Content-Type: application/json
 
 ### Refresh Access Token
 GET {{apiUrl}}/auth/refresh-access-token
-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjA5NCwiZXhwIjoxNzUzNTUwODk0fQ.6A7IF5pAlT9LcaAGyy7cshPCAKleDH6pLrwxIKmRLfA
+Cookie: refreshToken={{refreshToken}}
 Content-Type: application/json
 
-### Tasks
-GET {{apiUrl}}/task
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjMwMSwiZXhwIjoxNzUyOTQ2OTAxfQ.a-3dt8p-L4USM_jKRaSQf-MDcSQeOkiCD8qKxcNKu24
+### Task List
+GET {{apiUrl}}/tasks
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
+
+### Task Creation
+POST {{apiUrl}}/task
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "My first task",
+    "description": "",
+    "dueDate": "2025-11-21",
+    "isDone": true
+}
+
+### Task Update
+
+### Task Partial Update (change status)
+
+### Task Deletion 

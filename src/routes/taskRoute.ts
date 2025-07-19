@@ -4,6 +4,7 @@ import { authCheck } from "middlewares/auth.js";
 
 const router = Router();
 
-router.get("/task", authCheck, controller.getAllTasksByUserId);
+router.get("/tasks", authCheck, controller.getAllTasks);
+router.post("/task", authCheck, controller.createTaskController);
 
 export default router;
