@@ -23,8 +23,10 @@ Content-Type: application/json
 
 {
     "email": "caio@mail.com",
-    "password": "1234"
+    "password": "12345"
 }
 
 ### Tasks
 GET {{apiUrl}}/task
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MjkzNjQwNiwiZXhwIjoxNzUyOTM3MDA2fQ.X3h5Rd8QyzdJyUCn9qr8s3KNiKAB3-c_tRs22k65IWo
+Content-Type: application/json
