@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Task Management API
   version: 1.0.0
@@ -9,12 +9,9 @@ servers:
     description: Production
 paths:
   /auth/register:
-    $ref: './paths/auth.register.yaml'
+    $ref: "./paths/auth.register.yaml"
   /auth/login:
-    $ref: './paths/auth.login.yaml'
-components:
-  schemas:
-    Task: 
-      $ref: './schemas/task.yaml#/Task'
-    User: 
-      $ref: './schemas/user.yaml#/User'
+    $ref: "./paths/auth.login.yaml"
+  /auth/refresh-access-token:
+    $ref: "./paths/auth.refreshAccessToken.yaml"
+

@@ -1,0 +1,61 @@
+post:
+  summary: Refresh access token
+  description: >
+    Generates a new access token using a valid refresh token provided via cookie named `refreshToken`.
+  tags:
+    - Auth
+  parameters:
+    - in: cookie
+      name: refreshToken
+      required: true
+      schema:
+        type: string
+      description: Refresh token required in cookie
+  responses:
+    "200":
+      description: New access token generated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newAccessToken:
+                type: string
+                description: JWT access token for authenticated endpoints
+    "400":
+      description: Refresh token is missing from the cookies (refreshToken missing (cookie))
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: refreshToken missing (cookie)
+    "401":
+      description: >
+        Refresh token is expired, invalid, malformed, or not yet active.
+        Examples: 
+          - Refresh token expired (TokenExpiredError) 
+          - Invalid refresh token or malformed request (JsonWebTokenError) 
+          - Refresh token is not yet active (NotBeforeError)
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          examples:
+            TokenExpiredError:
+              value:
+                message: Refresh token expired
+            JsonWebTokenError:
+              value:
+                message: Invalid refresh token or malformed request.
+            NotBeforeError:
+              value:
+                message: Refresh token is not yet active
+    "500":
+      description: Unexpected authentication error (An unexpected authentication error occurred.)
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Unknown Error

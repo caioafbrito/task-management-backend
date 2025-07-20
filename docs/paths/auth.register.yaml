@@ -2,22 +2,40 @@ post:
   summary: Let you register in the App
   description: This route creates a new user.
   operationId: registerUser
+  tags:
+    - Auth
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../schemas/user.yaml#/CreateUserRequest'
+          $ref: "../schemas/user.yaml#/CreateUserRequest"
   responses:
-    '201':
-      description: User created
+    "201":
+      description: User created!
       content:
         application/json:
           schema:
-            $ref: '../schemas/user.yaml#/CreateUserResponse'
-    '409':
-      description: The App already has a user with the email provided (DuplicatedUserEmailError)
-    '422':
-      description: Your request does not follow the body pattern or some field does not follow some constraint. (ApiError)
-    '500':
+            $ref: "../schemas/user.yaml#/CreateUserResponse"
+    "409":
+      description: The App already has a user with the email provided.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: The email provided is already in use.
+    "422":
+      description: Your request does not follow the body pattern or some field does not follow some constraint.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+    "500":
       description: Internal server error. If it persists, contact the admin.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Unknown Error.

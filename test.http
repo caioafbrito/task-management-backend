@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Refresh Access Token
-GET {{apiUrl}}/auth/refresh-access-token
+POST {{apiUrl}}/auth/refresh-access-token
 Cookie: refreshToken={{refreshToken}}
 Content-Type: application/json
 

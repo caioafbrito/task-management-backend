@@ -12,7 +12,7 @@ import fs from "fs";
 import path from "path";
 import YAML from "yaml";
 import swaggerUi from "swagger-ui-express";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 // === Path Definitions ===
 const __filename = fileURLToPath(import.meta.url);
@@ -27,15 +27,16 @@ let server;
 
 // === Choose HTTP for development, HTTPS for production ===
 if (isProd) {
-    const sslKeyPath = process.env.SSL_KEY_PATH || path.resolve("certs/key.pem");
-    const sslCertPath = process.env.SSL_CERT_PATH || path.resolve("certs/cert.pem");
-    const options = {
-        key: fs.readFileSync(sslKeyPath),
-        cert: fs.readFileSync(sslCertPath)
-    };
-    server = https.createServer(options, app);
+  const sslKeyPath = process.env.SSL_KEY_PATH || path.resolve("certs/key.pem");
+  const sslCertPath =
+    process.env.SSL_CERT_PATH || path.resolve("certs/cert.pem");
+  const options = {
+    key: fs.readFileSync(sslKeyPath),
+    cert: fs.readFileSync(sslCertPath),
+  };
+  server = https.createServer(options, app);
 } else {
-    server = http.createServer(app);
+  server = http.createServer(app);
 }
 
 // === Middlewares ===
@@ -50,28 +51,28 @@ app.use(errorHandler);
 
 // === Documentation ===
 const openApiPath = path.join(__dirname, "..", "docs", "bundle.yaml");
-const docFile = fs.readFileSync(openApiPath, 'utf8');
+const docFile = fs.readFileSync(openApiPath, "utf8");
 const swaggerDocument = YAML.parse(docFile);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // === Listen ===
 server.listen(PORT, () => {
-    console.log(
-        isProd
-            ? `HTTPS server is listening on port ${PORT}`
-            : `HTTP server is listening on port ${PORT}`
-    );
+  console.log(
+    isProd
+      ? `HTTPS server is listening on port ${PORT}`
+      : `HTTP server is listening on port ${PORT}`
+  );
 });
 
 // === Robust process error handling ===
 process.on("unhandledRejection", (reason, promise) => {
-    console.error({ promise, reason }, "Unhandled Rejection");
+  console.error({ promise, reason }, "Unhandled Rejection");
 });
 
 process.on("uncaughtException", (error) => {
-    console.error({ error }, "Uncaught Exception");
-    server.close(() => {
-        process.exit(1);
-    });
-    setTimeout(() => process.exit(1), 10 * 1000).unref();
+  console.error({ error }, "Uncaught Exception");
+  server.close(() => {
+    process.exit(1);
+  });
+  setTimeout(() => process.exit(1), 10 * 1000).unref();
 });
