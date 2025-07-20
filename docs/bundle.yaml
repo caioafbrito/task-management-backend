@@ -11,7 +11,7 @@ paths:
   /auth/register:
     post:
       summary: Let you register in the App
-      description: This route creates a new user
+      description: This route creates a new user.
       operationId: registerUser
       requestBody:
         required: true
@@ -24,10 +24,40 @@ paths:
           description: User created
           content:
             application/json:
-              schemas:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+        '409':
+          description: The App already has a user with the email provided (DuplicatedUserEmailError)
+        '422':
+          description: Your request does not follow the body pattern or some field does not follow some constraint. (ApiError)
+        '500':
+          description: Internal server error. If it persists, contact the admin.
+  /auth/login:
+    post:
+      summary: Let you login in the App
+      description: This route checks the credentials and logs the user into App.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateUserRequest'
+      responses:
+        '200':
+          description: User successfully passed into authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponse'
+        '401':
+          description: Invalid credentials (email and/or password) (InvalidCredentialsError)
+        '404':
+          description: User not found (UserNotFoundError)
+        '422':
+          description: Your request does not follow the body pattern or some field does not follow some constraint. (ApiError)
+        '500':
+          description: Internal server error. If it persists, contact the admin.
 components:
   schemas:
     Task:
@@ -79,8 +109,37 @@ components:
           type: boolean
           default: false
           description: If the user want 2faEnabled (optional, default=false)
-        required:
-          - name
-          - age
-          - email
-          - password
+      required:
+        - name
+        - age
+        - email
+        - password
+    CreateUserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User ID
+        userName:
+          type: string
+          description: User name
+    AuthenticateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          format: email
+          description: User email (required)
+        password:
+          type: string
+          description: User password (required)
+      required:
+        - email
+        - password
+    AuthenticateUserResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token to use when accessing endpoints

@@ -33,8 +33,40 @@ CreateUserRequest:
       type: boolean
       default: false
       description: If the user want 2faEnabled (optional, default=false)
-    required:
-      - name
-      - age
-      - email
-      - password
+  required:
+    - name
+    - age
+    - email
+    - password
+
+CreateUserResponse:
+  type: object
+  properties:
+    userId:
+      type: string
+      description: User ID
+    userName:
+      type: string
+      description: User name
+
+AuthenticateUserRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      maxLength: 255
+      format: email
+      description: User email (required)
+    password:
+      type: string
+      description: User password (required)
+  required:
+    - email
+    - password
+
+AuthenticateUserResponse:
+  type: object
+  properties:
+    accessToken:
+      type: string
+      description: JWT access token to use when accessing endpoints

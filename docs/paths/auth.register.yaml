@@ -1,6 +1,6 @@
 post:
   summary: Let you register in the App
-  description: This route creates a new user
+  description: This route creates a new user.
   operationId: registerUser
   requestBody:
     required: true
@@ -13,7 +13,11 @@ post:
       description: User created
       content:
         application/json:
-          schemas:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
+          schema:
+            $ref: '../schemas/user.yaml#/CreateUserResponse'
+    '409':
+      description: The App already has a user with the email provided (DuplicatedUserEmailError)
+    '422':
+      description: Your request does not follow the body pattern or some field does not follow some constraint. (ApiError)
+    '500':
+      description: Internal server error. If it persists, contact the admin.

@@ -11,7 +11,8 @@
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
     "db:studio": "npx drizzle-kit studio",
-    "swagger:bundle": "npx redocly bundle docs/openapi.yaml --output docs/bundle.yaml"
+    "swagger:bundle": "npx redocly bundle docs/openapi.yaml --output docs/bundle.yaml",
+    "start:dev:docs": "npm run swagger:bundle && npm run start:dev"
   },
   "repository": {
     "type": "git",
