@@ -10,7 +10,15 @@ import http from "http";
 import https from "https";
 import fs from "fs";
 import path from "path";
+import YAML from "yaml";
+import swaggerUi from "swagger-ui-express";
+import { fileURLToPath } from 'url';
 
+// === Path Definitions ===
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// === Server Definitions ===
 const PORT = process.env.PORT ?? 3000;
 const isProd = process.env.NODE_ENV === "prod";
 const app = express();
@@ -39,6 +47,12 @@ app.use(routers);
 
 // === Error Handling ===
 app.use(errorHandler);
+
+// === Documentation ===
+const openApiPath = path.join(__dirname, "..", "docs", "bundle.yaml");
+const docFile = fs.readFileSync(openApiPath, 'utf8');
+const swaggerDocument = YAML.parse(docFile);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // === Listen ===
 server.listen(PORT, () => {

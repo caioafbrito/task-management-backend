@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local development
+  - url: https://api.seusite.com/api/v1
+    description: Production
+paths:
+  /auth/register:
+    $ref: './paths/auth.register.yaml'
+components:
+  schemas:
+    Task: 
+      $ref: './schemas/task.yaml#/Task'
+    User: 
+      $ref: './schemas/user.yaml#/User'

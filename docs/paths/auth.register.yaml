@@ -1,0 +1,11 @@
+post:
+  summary: Let you register in the App
+  responses:
+    '201':
+      description: User data
+      content:
+        application/json:
+          schemas:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'

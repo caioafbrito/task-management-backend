@@ -3,7 +3,7 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk1MDUzNSwiZXhwIjoxNzUyOTUxMTM1fQ.TN5xwEYPQFtiI7Tb4Oolbwg4xi9vSXiU-fwC35VAJgg
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk2MTc2NywiZXhwIjoxNzUyOTYyMzY3fQ.RATh85EpU0CeWfSOtN8bzdV2Uq4yVk8VYemPt1IViCU
 
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjA5NCwiZXhwIjoxNzUzNTUwODk0fQ.6A7IF5pAlT9LcaAGyy7cshPCAKleDH6pLrwxIKmRLfA
 

@@ -1,0 +1,11 @@
+User:
+  type: object
+  properties:
+    id:
+      type: number
+    name:
+      type: string
+    email:
+      type: string
+    2faEnabled:
+      type: boolean
