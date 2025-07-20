@@ -1,0 +1,25 @@
+post:
+  summary: Let you login in the App
+  description: This route checks the credentials and logs the user into App.
+  operationId: loginUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/user.yaml#/AuthenticateUserRequest'
+  responses:
+    '200':
+      description: User successfully passed into authentication
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/user.yaml#/AuthenticateUserResponse'
+    '401':
+      description: Invalid credentials (email and/or password) (InvalidCredentialsError)
+    '404':
+      description: User not found (UserNotFoundError)
+    '422':
+      description: Your request does not follow the body pattern or some field does not follow some constraint. (ApiError)
+    '500':
+      description: Internal server error. If it persists, contact the admin.
