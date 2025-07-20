@@ -161,7 +161,29 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: Unknown Error
+  /tasks:
+    get:
+      summary: Here you can get all tasks of some user.
+      description: After login, you can call this endpoint to get all tasks of the user.
+      tags:
+        - Task
+      responses:
+        '200':
+          description: All tasks returned!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      security:
+        - bearerAuth: []
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateUserRequest:
       type: object
@@ -235,3 +257,18 @@ components:
         accessToken:
           type: string
           description: JWT access token to use when accessing endpoints
+    Task:
+      type: object
+      properties:
+        id:
+          type: number
+        owner:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: date
+        isDone:
+          type: boolean

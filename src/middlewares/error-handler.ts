@@ -8,7 +8,7 @@ const errorHandler = (
     next: NextFunction
 ) => {
     return res.status(error.code ?? 500).json({
-        message: error.message ?? "Server error occurred. Please, contact the admin.",
+        message: error.message ?? "Unknown Error",
     });
 };
 
