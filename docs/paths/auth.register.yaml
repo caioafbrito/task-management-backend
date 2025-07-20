@@ -1,8 +1,16 @@
 post:
   summary: Let you register in the App
+  description: This route creates a new user
+  operationId: registerUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/user.yaml#/CreateUserRequest'
   responses:
     '201':
-      description: User data
+      description: User created
       content:
         application/json:
           schemas:

@@ -11,9 +11,17 @@ paths:
   /auth/register:
     post:
       summary: Let you register in the App
+      description: This route creates a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '201':
-          description: User data
+          description: User created
           content:
             application/json:
               schemas:
@@ -48,3 +56,31 @@ components:
           type: string
         2faEnabled:
           type: boolean
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: User name (required)
+        age:
+          type: number
+          minimum: 1
+          description: User age (required)
+        email:
+          type: string
+          maxLength: 255
+          format: email
+          description: User email (required)
+        password:
+          type: string
+          description: User password (required)
+        2faEnabled:
+          type: boolean
+          default: false
+          description: If the user want 2faEnabled (optional, default=false)
+        required:
+          - name
+          - age
+          - email
+          - password

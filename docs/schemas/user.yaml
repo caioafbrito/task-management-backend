@@ -9,3 +9,32 @@ User:
       type: string
     2faEnabled:
       type: boolean
+
+CreateUserRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      maxLength: 255
+      description: User name (required)
+    age:
+      type: number
+      minimum: 1
+      description: User age (required)
+    email:
+      type: string
+      maxLength: 255
+      format: email
+      description: User email (required)
+    password:
+      type: string
+      description: User password (required)
+    2faEnabled:
+      type: boolean
+      default: false
+      description: If the user want 2faEnabled (optional, default=false)
+    required:
+      - name
+      - age
+      - email
+      - password
