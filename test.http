@@ -3,9 +3,9 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk2MTc2NywiZXhwIjoxNzUyOTYyMzY3fQ.RATh85EpU0CeWfSOtN8bzdV2Uq4yVk8VYemPt1IViCU
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InN0cmluZyIsInVzZXJJZCI6MiwiaWF0IjoxNzUzMTExODM1LCJleHAiOjE3NTMxMTI0MzV9.GhePFZ8F08On9gSey5VydxE9r47zeQaipznaZBj67mQ
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1Mjk0NjA5NCwiZXhwIjoxNzUzNTUwODk0fQ.6A7IF5pAlT9LcaAGyy7cshPCAKleDH6pLrwxIKmRLfA
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InN0cmluZyIsInVzZXJJZCI6MiwiaWF0IjoxNzUzMTExODM1LCJleHAiOjE3NTM3MTY2MzV9.uICytcOG66UeSaSmOsptORCd-mwUbYFsNCwgifkZ7-g
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
@@ -26,14 +26,28 @@ POST {{apiUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "caio@mail.com",
-    "password": "12345"
+    "email": "user@example.com",
+    "password": "string"
 }
 
 ### Refresh Access Token
 POST {{apiUrl}}/auth/refresh-access-token
 Cookie: refreshToken={{refreshToken}}
 Content-Type: application/json
+
+### Enable 2FA
+POST {{apiUrl}}/auth/2fa/enable
+Authorization: Bearer {{accessToken}}
+Content-Type: image/png
+
+### Verify 2FA
+POST {{apiUrl}}/auth/2fa/verify
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "code": "880985"
+}
 
 ### Task List
 GET {{apiUrl}}/tasks

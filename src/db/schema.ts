@@ -17,6 +17,7 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: text("password").notNull(),
   "2faEnabled": boolean("2fa_enabled").notNull().default(false),
+  "2faSecret": text("2fa_secret"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
