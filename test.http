@@ -3,9 +3,9 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InN0cmluZyIsInVzZXJJZCI6MiwiaWF0IjoxNzUzMTExODM1LCJleHAiOjE3NTMxMTI0MzV9.GhePFZ8F08On9gSey5VydxE9r47zeQaipznaZBj67mQ
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExNzAyOSwiZXhwIjoxNzUzMTE3NjI5fQ.Ad0ugdS_bUKC5IKgMjz3smrcaDURecnvWWG0NFx9KEw
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InN0cmluZyIsInVzZXJJZCI6MiwiaWF0IjoxNzUzMTExODM1LCJleHAiOjE3NTM3MTY2MzV9.uICytcOG66UeSaSmOsptORCd-mwUbYFsNCwgifkZ7-g
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExNzAyOSwiZXhwIjoxNzUzNzIxODI5fQ.xTJSE_qvwUkXpmRlXyLUuy1p7AJZ_0VH4YGdyiA5uac
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
@@ -17,7 +17,7 @@ Content-Type: application/json
 {
     "name": "Caio Brito",
     "age": 19,
-    "email": "caio@mail.com",
+    "email": "caio1@mail.com",
     "password": "12345"
 }
 
@@ -26,8 +26,8 @@ POST {{apiUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "user@example.com",
-    "password": "string"
+    "email": "caio1@mail.com",
+    "password": "12345"
 }
 
 ### Refresh Access Token
@@ -46,7 +46,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-    "code": "880985"
+    "code": "113953"
 }
 
 ### Task List

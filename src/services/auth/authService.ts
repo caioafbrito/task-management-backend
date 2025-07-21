@@ -1,10 +1,4 @@
-import {
-  findUserById,
-  findUserByEmail,
-  change2faSecret,
-  get2faSecret,
-  enable2fa,
-} from "../user/userService.js";
+import * as UserService from "../user/userService.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -12,7 +6,7 @@ import type { AuthenticateUserDto } from "dtos/user.dto.js";
 import { UserJwt, UserJwtPayload } from "types/jwtType.js";
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
-import { encryptSecret, decryptSecret } from "utils/encrypt.js";
+import * as EncryptUtil from "utils/encrypt.js";
 
 export const loginUser = async (authData: AuthenticateUserDto) => {
   const { email, password } = authData;
@@ -20,7 +14,7 @@ export const loginUser = async (authData: AuthenticateUserDto) => {
     password: hashedPass,
     id: userId,
     name: userName,
-  } = await findUserByEmail(email);
+  } = await UserService.findUserByEmail(email);
 
   const isPassCorrect = await bcrypt.compare(password, hashedPass);
   if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
@@ -63,7 +57,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
 };
 
 export const is2faEnabled = async (userId: number) => {
-  const user = await findUserById(userId);
+  const user = await UserService.findUserById(userId);
   return user["2faEnabled"];
 };
 
@@ -71,8 +65,8 @@ export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
   const { userName, userId } = jwtPayload;
   const service = "Task Management";
   const tempSecret = authenticator.generateSecret();
-  const encryptedSecret = encryptSecret(tempSecret);
-  await change2faSecret(userId, encryptedSecret);
+  const encryptedSecret = EncryptUtil.encryptSecret(tempSecret);
+  await UserService.change2faSecret(userId, encryptedSecret);
   const otpauth = authenticator.keyuri(userName, service, tempSecret);
   try {
     const buffer = await qrcode.toBuffer(otpauth);
@@ -83,9 +77,9 @@ export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
 };
 
 export const verify2fa = async (userId: number, code: string) => {
-  const encryptedSecret = await get2faSecret(userId);
-  const decryptedSecret = decryptSecret(encryptedSecret);
+  const encryptedSecret = await UserService.get2faSecret(userId);
+  const decryptedSecret = EncryptUtil.decryptSecret(encryptedSecret);
   const isValid = authenticator.check(code, decryptedSecret);
   if (!isValid) throw new AuthError.CodeNotValidError();
-  await enable2fa(userId);
+  await UserService.enable2fa(userId);
 };
