@@ -1,4 +1,4 @@
-import * as UserService from "../user/userService.js";
+import * as Service from "../index.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -14,11 +14,37 @@ export const loginUser = async (authData: AuthenticateUserDto) => {
     password: hashedPass,
     id: userId,
     name: userName,
-  } = await UserService.findUserByEmail(email);
+  } = await Service.findUserByEmail(email);
 
   const isPassCorrect = await bcrypt.compare(password, hashedPass);
   if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
 
+  const isEnabled = await Service.is2faEnabled(userId);
+
+  if (isEnabled) {
+    const authToken = jwt.sign(
+      { userName, userId },
+      process.env["2FA_TOKEN_SECRET"]!,
+      {
+        expiresIn: "1h",
+      }
+    );
+    return {
+      is2faRequired: true,
+      authToken,
+    };
+  }
+
+  const { accessToken, refreshToken } = generateLoginTokens(userName, userId);
+
+  return {
+    is2faRequired: false,
+    accessToken,
+    refreshToken,
+  };
+};
+
+export const generateLoginTokens = (userName: string, userId: number) => {
   const accessToken = jwt.sign(
     { userName, userId },
     process.env.ACCESS_TOKEN_SECRET!,
@@ -34,11 +60,10 @@ export const loginUser = async (authData: AuthenticateUserDto) => {
       expiresIn: "7d",
     }
   );
-
   return {
     accessToken,
-    refreshToken,
-  };
+    refreshToken
+  }
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {
@@ -57,7 +82,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
 };
 
 export const is2faEnabled = async (userId: number) => {
-  const user = await UserService.findUserById(userId);
+  const user = await Service.findUserById(userId);
   return user["2faEnabled"];
 };
 
@@ -66,7 +91,7 @@ export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
   const service = "Task Management";
   const tempSecret = authenticator.generateSecret();
   const encryptedSecret = EncryptUtil.encryptSecret(tempSecret);
-  await UserService.change2faSecret(userId, encryptedSecret);
+  await Service.change2faSecret(userId, encryptedSecret);
   const otpauth = authenticator.keyuri(userName, service, tempSecret);
   try {
     const buffer = await qrcode.toBuffer(otpauth);
@@ -77,9 +102,9 @@ export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
 };
 
 export const verify2fa = async (userId: number, code: string) => {
-  const encryptedSecret = await UserService.get2faSecret(userId);
+  const encryptedSecret = await Service.get2faSecret(userId);
   const decryptedSecret = EncryptUtil.decryptSecret(encryptedSecret);
   const isValid = authenticator.check(code, decryptedSecret);
   if (!isValid) throw new AuthError.CodeNotValidError();
-  await UserService.enable2fa(userId);
+  await Service.enable2fa(userId);
 };

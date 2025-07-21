@@ -3,9 +3,11 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExNzAyOSwiZXhwIjoxNzUzMTE3NjI5fQ.Ad0ugdS_bUKC5IKgMjz3smrcaDURecnvWWG0NFx9KEw
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExOTgyOSwiZXhwIjoxNzUzMTIwNDI5fQ.w6L3eRtjEhAzCzDppJgOzi4zD5V5h3wY6ttP-plMLh8
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExNzAyOSwiZXhwIjoxNzUzNzIxODI5fQ.xTJSE_qvwUkXpmRlXyLUuy1p7AJZ_0VH4YGdyiA5uac
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExOTgyOSwiZXhwIjoxNzUzNzI0NjI5fQ.D0DfjBlLzIcfyhzwtUlqqiSUMjNfWqxLvEcv-q0MNb4
+
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjQsImlhdCI6MTc1MzExODkzOCwiZXhwIjoxNzUzMTIyNTM4fQ.OBz7YvTudrZQd_Ii3JPvrTuCy0TimoJ8InIB5dgtDug
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
@@ -30,6 +32,15 @@ Content-Type: application/json
     "password": "12345"
 }
 
+### Verify 2FA (login proccess)
+POST {{apiUrl}}/auth/2fa/verify
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "code": "997492"
+}
+
 ### Refresh Access Token
 POST {{apiUrl}}/auth/refresh-access-token
 Cookie: refreshToken={{refreshToken}}
@@ -40,8 +51,8 @@ POST {{apiUrl}}/auth/2fa/enable
 Authorization: Bearer {{accessToken}}
 Content-Type: image/png
 
-### Verify 2FA
-POST {{apiUrl}}/auth/2fa/verify
+### Verify 2FA (setup proccess - while enabling)
+POST {{apiUrl}}/auth/2fa/setup/verify
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 

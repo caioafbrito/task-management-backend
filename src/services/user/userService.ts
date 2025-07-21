@@ -37,5 +37,5 @@ export const get2faSecret = async (userId: number) => {
 };
 
 export const enable2fa = async (userId: number) => {
-  return await UserModel.enable2faByUserId(userId);
+  return await UserModel.toggle2faByUserId(userId, "enable");
 };

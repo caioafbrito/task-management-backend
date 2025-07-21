@@ -16,10 +16,16 @@ router.post(
 );
 
 router.post(
-  "/2fa/verify",
+  "/2fa/setup/verify",
   Middleware.authCheck,
   Middleware.checkUserId,
   AuthController.verify2faController
 );
+
+router.post(
+  "/2fa/verify",
+  Middleware.multipleAuthCheck,
+  AuthController.verify2faController
+)
 
 export default router;

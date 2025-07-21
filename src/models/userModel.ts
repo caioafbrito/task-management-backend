@@ -40,7 +40,7 @@ export const get2faSecretByUserId = async (userId: number) => {
   return result[0]["2faSecret"];
 };
 
-export const enable2faByUserId = async (userId: number) => {
+export const toggle2faByUserId = async (userId: number, action: "enable" | "disable") => {
   return await db
     .update(users)
     .set({ "2faEnabled": true })

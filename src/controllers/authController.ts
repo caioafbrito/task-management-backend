@@ -40,16 +40,23 @@ export const loginController = async (
     const result = Dto.AuthenticateUserDto.safeParse(body);
     if (!result.success)
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
-    const { accessToken, refreshToken } = await Service.loginUser(result.data);
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 7 * 24 * 3600 * 1000,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    });
-    return res.status(200).send({
-      accessToken,
-    });
+    const { is2faRequired, authToken, accessToken, refreshToken } =
+      await Service.loginUser(result.data);
+    if (is2faRequired) {
+      return res.status(202).send({
+        authToken,
+      });
+    } else {
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 7 * 24 * 3600 * 1000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      });
+      return res.status(200).send({
+        accessToken,
+      });
+    }
   } catch (error) {
     if (error instanceof ServiceError.UserNotFoundError) {
       next(new Util.ApiError(error.message, 404));
@@ -71,7 +78,8 @@ export const refreshAccessTokenController = async (
   try {
     const { cookies } = req;
     const { refreshToken } = cookies;
-    if (!refreshToken) throw new Util.ApiError("refreshToken missing (cookie)", 400);
+    if (!refreshToken)
+      throw new Util.ApiError("refreshToken missing (cookie)", 400);
     const newAccessToken = await Service.refreshAccessToken(refreshToken);
     return res.status(200).send({
       newAccessToken,
@@ -80,7 +88,9 @@ export const refreshAccessTokenController = async (
     if (error instanceof jwt.TokenExpiredError) {
       next(new Util.ApiError("Refresh token expired", 401));
     } else if (error instanceof jwt.JsonWebTokenError) {
-      next(new Util.ApiError("Invalid refresh token or malformed request.", 401));
+      next(
+        new Util.ApiError("Invalid refresh token or malformed request.", 401)
+      );
     } else if (error instanceof jwt.NotBeforeError) {
       next(new Util.ApiError("Refresh token is not yet active", 401));
     } else if (error instanceof Util.ApiError) {
@@ -100,7 +110,8 @@ export const enable2faController = async (
     res.type("png");
     const { userId } = req.user;
     const isEnabled = await Service.is2faEnabled(userId);
-    if (isEnabled) return next(new Util.ApiError("The 2fa is already active.", 409));
+    if (isEnabled)
+      return next(new Util.ApiError("The 2fa is already active.", 409));
     const imgPng = await Service.generate2faQrCode(req.user as UserJwtPayload);
     return res.status(200).send(imgPng);
   } catch (error) {
@@ -121,12 +132,28 @@ export const verify2faController = async (
 ) => {
   try {
     const { body } = req;
-    const { userId } = req.user;
+    const { userName, userId } = req.user;
     const result = Dto.MultipleFactorAuthDto.safeParse(body);
     if (!result.success)
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
     await Service.verify2fa(userId, result.data.code);
-    return res.status(204).send();
+    if (req.path === "/2fa/verify") {
+      const { accessToken, refreshToken } = Service.generateLoginTokens(
+        userName,
+        userId
+      );
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 7 * 24 * 3600 * 1000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      });
+      return res.status(200).send({
+        accessToken,
+      });
+    } else {
+      return res.status(204).send();
+    }
   } catch (error) {
     if (error instanceof ServiceError.SecretNotFoundError) {
       next(new Util.ApiError(error.message, 404));
