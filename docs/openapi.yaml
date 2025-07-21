@@ -14,7 +14,7 @@ paths:
     $ref: "./paths/auth.login.yaml"
   /auth/refresh-access-token:
     $ref: "./paths/auth.refreshAccessToken.yaml"
-  /tasks:
+  /task:
     $ref: "./paths/task.yaml"
 components:
   securitySchemes:

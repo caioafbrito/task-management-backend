@@ -5,6 +5,11 @@ export const listTasksByUserId = async(userId: number) => {
     return await TaskModel.getTasksByUserId(userId);
 }
 
+export const listTasksByUserIdAndTaskId = async(userId: number, taskId: number) => {
+    return await TaskModel.getTaskByUserIdAndTaskId(userId, taskId);
+}
+
+
 export const createNewTask = async(task: TaskDto.CreateTaskPayload) => {
     return await TaskModel.createTask(task);
 }

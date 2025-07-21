@@ -10,6 +10,24 @@ export const getAllTasks = async (req: Request, res: Response) => {
   return res.status(200).send(tasks);
 };
 
+export const getTaskById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.user;
+  console.log(req.params);
+  const result = Dto.GetTaskDto.safeParse(req.params);
+  if (!result.success) {
+    return next(new Util.ApiError(fromZodError(result.error).toString(), 400));
+  }
+  const task = await Service.listTasksByUserIdAndTaskId(
+    userId,
+    result.data.taskId
+  );
+  return res.status(200).send(task);
+};
+
 export const createTaskController = async (
   req: Request,
   res: Response,

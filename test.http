@@ -3,11 +3,11 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEyOTYzNSwiZXhwIjoxNzUzMTMwMjM1fQ.EjuonbYLbQyOassLWMMIBGCh3eVxn6SqnOm4nW2N3yk
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzEyNywiZXhwIjoxNzUzMTM3NzI3fQ.xbr3sssTZzGiEX-a-3DDVQjm-wmoMe2nxejqzXHTrec
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEyOTYzNSwiZXhwIjoxNzUzNzM0NDM1fQ.WEsU6Y8xQ3kH6mWC_bdMUEeMoQkhmI2zRdUNfh2npCY
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzEyNywiZXhwIjoxNzUzNzQxOTI3fQ.wYX7EMN1omByRT7DQE5bE6QtsmCyHLgrEMpfN6E5oZ0
 
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEyOTQ5NSwiZXhwIjoxNzUzMTMzMDk1fQ.38DZQzvSP5VtWYSiuCE6JYD6QnBohoZBE_vT1aLB_gE
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzA5MSwiZXhwIjoxNzUzMTQwNjkxfQ.3P1mtCEqx_6nd7kaCeaNzGHw6iTtsRvcqeIVmASWcrM
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
@@ -38,7 +38,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "code": "786545"
+    "code": "159319"
 }
 
 ### Refresh Access Token
@@ -61,7 +61,12 @@ Content-Type: application/json
 }
 
 ### Task List
-GET {{apiUrl}}/tasks
+GET {{apiUrl}}/task
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### Specific Task
+GET {{apiUrl}}/task/10
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
