@@ -7,7 +7,7 @@ import { fromZodError } from "zod-validation-error/v4";
 import jwt from "jsonwebtoken";
 import { UserJwtPayload } from "types/jwtType.js";
 
-export const registerController = async (
+export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -30,7 +30,7 @@ export const registerController = async (
   }
 };
 
-export const loginController = async (
+export const login = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -70,7 +70,7 @@ export const loginController = async (
   }
 };
 
-export const refreshAccessTokenController = async (
+export const refreshAccessToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -80,7 +80,7 @@ export const refreshAccessTokenController = async (
     const { refreshToken } = cookies;
     if (!refreshToken)
       throw new Util.ApiError("refreshToken missing (cookie)", 400);
-    const newAccessToken = await Service.refreshAccessToken(refreshToken);
+    const newAccessToken = await Service.refreshAccessTokenForUser(refreshToken);
     return res.status(200).send({
       newAccessToken,
     });
@@ -101,7 +101,7 @@ export const refreshAccessTokenController = async (
   }
 };
 
-export const enable2faController = async (
+export const enable2fa   = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -112,7 +112,7 @@ export const enable2faController = async (
     const isEnabled = await Service.is2faEnabled(userId);
     if (isEnabled)
       return next(new Util.ApiError("The 2fa is already active.", 409));
-    const imgPng = await Service.generate2faQrCode(req.user as UserJwtPayload);
+    const imgPng = await Service.generate2faQrCodeForUser(req.user as UserJwtPayload);
     return res.status(200).send(imgPng);
   } catch (error) {
     if (error instanceof ServiceError.QrCodeGenerationError) {
@@ -125,7 +125,7 @@ export const enable2faController = async (
   }
 };
 
-export const verify2faController = async (
+export const verify2fa = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -138,7 +138,7 @@ export const verify2faController = async (
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
     await Service.verify2fa(userId, result.data.code);
     if (req.path === "/2fa/verify") {
-      const { accessToken, refreshToken } = Service.generateLoginTokens(
+      const { accessToken, refreshToken } = Service.generateTokensForLogin(
         userName,
         userId
       );

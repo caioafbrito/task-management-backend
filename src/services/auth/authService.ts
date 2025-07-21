@@ -35,7 +35,7 @@ export const loginUser = async (authData: AuthenticateUserDto) => {
     };
   }
 
-  const { accessToken, refreshToken } = generateLoginTokens(userName, userId);
+  const { accessToken, refreshToken } = generateTokensForLogin(userName, userId);
 
   return {
     is2faRequired: false,
@@ -44,7 +44,7 @@ export const loginUser = async (authData: AuthenticateUserDto) => {
   };
 };
 
-export const generateLoginTokens = (userName: string, userId: number) => {
+export const generateTokensForLogin = (userName: string, userId: number) => {
   const accessToken = jwt.sign(
     { userName, userId },
     process.env.ACCESS_TOKEN_SECRET!,
@@ -66,7 +66,7 @@ export const generateLoginTokens = (userName: string, userId: number) => {
   }
 };
 
-export const refreshAccessToken = async (refreshToken: string) => {
+export const refreshAccessTokenForUser = async (refreshToken: string) => {
   const { userId, userName } = jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET!
@@ -86,7 +86,7 @@ export const is2faEnabled = async (userId: number) => {
   return user["2faEnabled"];
 };
 
-export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
+export const generate2faQrCodeForUser = async (jwtPayload: UserJwtPayload) => {
   const { userName, userId } = jwtPayload;
   const service = "Task Management";
   const tempSecret = authenticator.generateSecret();
@@ -102,9 +102,9 @@ export const generate2faQrCode = async (jwtPayload: UserJwtPayload) => {
 };
 
 export const verify2fa = async (userId: number, code: string) => {
-  const encryptedSecret = await Service.get2faSecret(userId);
+  const encryptedSecret = await Service.find2faSecretByUserId(userId);
   const decryptedSecret = EncryptUtil.decryptSecret(encryptedSecret);
   const isValid = authenticator.check(code, decryptedSecret);
   if (!isValid) throw new AuthError.CodeNotValidError();
-  await Service.enable2fa(userId);
+  await Service.enable2faByUserId(userId);
 };

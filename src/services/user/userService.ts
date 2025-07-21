@@ -4,19 +4,19 @@ import { CreateUserDto } from "dtos/user.dto.js";
 import bcrypt from "bcryptjs";
 
 export const findUserById = async (userId: number) => {
-  const user = await UserModel.getUserById(userId);
+  const user = await UserModel.findUserById(userId);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
 };
 
 export const findUserByEmail = async (email: string) => {
-  const user = await UserModel.getUserByEmail(email);
+  const user = await UserModel.findUserByEmail(email);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
 };
 
 export const registerUser = async (userData: CreateUserDto) => {
-  const userWithSameEmail = await UserModel.getUserByEmail(userData.email);
+  const userWithSameEmail = await UserModel.findUserByEmail(userData.email);
   if (userWithSameEmail) throw new UserError.DuplicatedUserEmailError();
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const userToCreate = { ...userData, password: hashedPassword };
@@ -27,15 +27,20 @@ export const change2faSecret = async (
   userId: number,
   encryptedSecret: string
 ) => {
-  return await UserModel.changeUser2faSecretByUserId(userId, encryptedSecret);
+  return await UserModel.update2faSecretByUserId(userId, encryptedSecret);
 };
 
-export const get2faSecret = async (userId: number) => {
-  const secret = await UserModel.get2faSecretByUserId(userId);
+export const find2faSecretByUserId = async (userId: number) => {
+  const secret = await UserModel.find2faSecretByUserId(userId);
   if (!secret) throw new UserError.SecretNotFoundError();
   return secret;
 };
 
-export const enable2fa = async (userId: number) => {
-  return await UserModel.toggle2faByUserId(userId, "enable");
+export const enable2faByUserId = async (userId: number) => {
+  return await UserModel.update2faByUserId(userId, "enable");
 };
+
+export const disable2faByUserId = async (userId: number) => {
+  return await UserModel.update2faByUserId(userId, "disable");
+};
+
