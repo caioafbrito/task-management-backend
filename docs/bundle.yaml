@@ -163,7 +163,7 @@ paths:
                 message: Unknown Error
   /tasks:
     get:
-      summary: Here you can get all tasks of some user.
+      summary: Here you can get all tasks of some user
       description: After login, you can call this endpoint to get all tasks of the user.
       tags:
         - Task

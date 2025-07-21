@@ -14,10 +14,11 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const createUser = async (userData: CreateUserDto) => {
-  return await db
+  const [user] = await db
     .insert(users)
     .values(userData)
     .returning({ userId: users.id, userName: users.name });
+  return user;
 };
 
 export const changeUser2faSecretByUserId = async (
@@ -40,7 +41,10 @@ export const get2faSecretByUserId = async (userId: number) => {
   return result[0]["2faSecret"];
 };
 
-export const toggle2faByUserId = async (userId: number, action: "enable" | "disable") => {
+export const toggle2faByUserId = async (
+  userId: number,
+  action: "enable" | "disable"
+) => {
   return await db
     .update(users)
     .set({ "2faEnabled": true })
