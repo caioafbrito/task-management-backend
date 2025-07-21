@@ -71,10 +71,9 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-    "title": "My first task",
-    "description": "",
-    "dueDate": "2025-11-21",
-    "isDone": true
+    "title": "Other task",
+    "description": "Testing the description 123",
+    "dueDate": "2025-11-21"
 }
 
 ### Task Update

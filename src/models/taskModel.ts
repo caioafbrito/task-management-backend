@@ -4,26 +4,35 @@ import { eq, sql } from "drizzle-orm";
 import type { CreateTaskPayload, UpdateTaskDto } from "dtos/task.dto.js";
 
 export const getTasksByUserId = async (userId: number) => {
-    return await db.select().from(tasks).where(eq(tasks.owner, userId));
-}
+  return await db.select().from(tasks).where(eq(tasks.owner, userId));
+};
 
 export const getTaskByTaskId = async (taskId: number) => {
-    return await db.select().from(tasks).where(eq(tasks.id, taskId));
-}
+  return await db.select().from(tasks).where(eq(tasks.id, taskId));
+};
 
 export const createTask = async (task: CreateTaskPayload) => {
-    return await db.insert(tasks).values(task);
-}
+  const result = await db.insert(tasks).values(task).returning();
+  return result[0];
+};
 
 export const updateTask = async (task: UpdateTaskDto) => {
-    return await db.update(tasks).set({ ...task, updatedAt: sql`NOW()` }).where(eq(tasks.id, task.id));
-}
+  return await db
+    .update(tasks)
+    .set({ ...task, updatedAt: sql`NOW()` })
+    .where(eq(tasks.id, task.id));
+};
 
-export const updateTaskStatusByTaskId = async (taskId: number, isDone: boolean) => {
-    return await db.update(tasks).set({ updatedAt: sql`NOW()`, isDone }).where(eq(tasks.id, taskId));
-}
+export const updateTaskStatusByTaskId = async (
+  taskId: number,
+  isDone: boolean
+) => {
+  return await db
+    .update(tasks)
+    .set({ updatedAt: sql`NOW()`, isDone })
+    .where(eq(tasks.id, taskId));
+};
 
 export const deleteTaskByTaskId = async (taskId: number) => {
-    return await db.delete(tasks).where(eq(tasks.id, taskId));
-}
-
+  return await db.delete(tasks).where(eq(tasks.id, taskId));
+};
