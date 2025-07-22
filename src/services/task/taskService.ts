@@ -22,3 +22,16 @@ export const updateTaskByTaskId = async (
 ) => {
   return await TaskModel.updateTaskByTaskId(taskId, task);
 };
+
+export const changeTaskStatusByUserIdAndTaskId = async (
+  userId: number,
+  taskId: number,
+  isDone: boolean
+) => {
+  const result = await TaskModel.updateTaskStatusByUserIdAndTaskId(
+    userId,
+    taskId,
+    isDone
+  );
+  return result.rowCount;
+};

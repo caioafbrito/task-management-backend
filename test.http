@@ -3,7 +3,7 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzMTkyMDA2fQ.izGMD9EFORcbTYv7HPaqDTE5Dqc2kkjjsJLyBIGUWfs
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5NTM3OSwiZXhwIjoxNzUzMTk1OTc5fQ.DgbSKxwEfFbxm2Ir34xlnefS0yx3wdJhfQM7ZktF32k
 
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzNzk2MjA2fQ.BsVq9DV-BP7wp2SwDbEiFPc2JF5g8dQZLt3bkO6zIEA
 
@@ -93,5 +93,12 @@ Content-Type: application/json
 }
 
 ### Task Partial Update (change status)
+PATCH {{apiUrl}}/task/8
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "isDone": true
+}
 
 ### Task Deletion 

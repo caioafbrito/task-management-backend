@@ -40,14 +40,15 @@ export const updateTaskByTaskId = async (
   return updatedTask;
 };
 
-export const updateTaskStatusByTaskId = async (
+export const updateTaskStatusByUserIdAndTaskId = async (
+  userId: number,
   taskId: number,
   isDone: boolean
 ) => {
   return await db
     .update(tasks)
     .set({ updatedAt: sql`NOW()`, isDone })
-    .where(eq(tasks.id, taskId));
+    .where(and(eq(tasks.owner, userId), eq(tasks.id, taskId)));
 };
 
 export const deleteTaskByTaskId = async (taskId: number) => {

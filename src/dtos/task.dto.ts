@@ -29,3 +29,7 @@ export const TaskIdParam = z.object({
 });
 
 export type TaskIdParam = z.infer<typeof TaskIdParam>;
+
+export const ChangeTaskStatus = z.object({
+  isDone: z.boolean()
+});

@@ -66,3 +66,28 @@ export const putTask = async (
   );
   return res.status(200).send(updatedTask);
 };
+
+export const patchTaskStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.user;
+  const paramResult = Dto.TaskIdParam.safeParse(req.params);
+  const bodyResult = Dto.ChangeTaskStatus.safeParse(req.body);
+  if (!paramResult.success || !bodyResult.success) {
+    const errors = [];
+    if (!paramResult.success)
+      errors.push(fromZodError(paramResult.error).toString());
+    if (!bodyResult.success)
+      errors.push(fromZodError(bodyResult.error).toString());
+    return next(new Util.ApiError(errors.join("\n"), 422));
+  }
+  const taskChanged = await Service.changeTaskStatusByUserIdAndTaskId(
+    userId,
+    paramResult.data.taskId,
+    bodyResult.data.isDone
+  );
+  if (taskChanged) return res.status(202).send();
+  return res.status(200).send();
+};
