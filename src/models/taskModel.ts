@@ -1,7 +1,7 @@
 import db from "../db/connection.js";
 import { tasks } from "db/schema.js";
 import { eq, sql, and } from "drizzle-orm";
-import type { CreateTaskPayload, UpdateTaskDto } from "dtos/task.dto.js";
+import type { CreateTaskPayload, UpdateTaskPayload } from "dtos/task.dto.js";
 
 export const getTasksByUserId = async (userId: number) => {
   return await db.select().from(tasks).where(eq(tasks.owner, userId));
@@ -27,11 +27,17 @@ export const insertTask = async (task: CreateTaskPayload) => {
   return result[0];
 };
 
-export const updateTask = async (task: UpdateTaskDto) => {
-  return await db
+export const updateTaskByTaskId = async (
+  taskId: number,
+  task: UpdateTaskPayload
+) => {
+  const [updatedTask] = await db
     .update(tasks)
     .set({ ...task, updatedAt: sql`NOW()` })
-    .where(eq(tasks.id, task.id));
+    .where(eq(tasks.id, taskId))
+    .returning();
+
+  return updatedTask;
 };
 
 export const updateTaskStatusByTaskId = async (

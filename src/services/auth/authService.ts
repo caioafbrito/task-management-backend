@@ -2,13 +2,13 @@ import * as Service from "../index.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import type { AuthenticateUserDto } from "dtos/user.dto.js";
+import type { AuthenticateUser } from "dtos/user.dto.js";
 import { UserJwt, UserJwtPayload } from "types/jwtType.js";
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
 import * as EncryptUtil from "utils/encrypt.js";
 
-export const loginUser = async (authData: AuthenticateUserDto) => {
+export const loginUser = async (authData: AuthenticateUser) => {
   const { email, password } = authData;
   const {
     password: hashedPass,

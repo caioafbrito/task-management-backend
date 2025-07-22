@@ -16,7 +16,7 @@ export const getTask = async (
   next: NextFunction
 ) => {
   const { userId } = req.user;
-  const result = Dto.GetTaskDto.safeParse(req.params);
+  const result = Dto.TaskIdParam.safeParse(req.params);
   if (!result.success) {
     return next(new Util.ApiError(fromZodError(result.error).toString(), 400));
   }
@@ -33,10 +33,36 @@ export const postTask = async (
   next: NextFunction
 ) => {
   const { userId } = req.user;
-  const result = Dto.CreateTaskDto.safeParse(req.body);
+  const result = Dto.CreateTask.safeParse(req.body);
   if (!result.success) {
     return next(new Util.ApiError(fromZodError(result.error).toString(), 422));
   }
   const task = await Service.createTask({ ...result.data, owner: userId });
   return res.status(201).send(task);
+};
+
+export const putTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.user;
+  const paramResult = Dto.TaskIdParam.safeParse(req.params);
+  const bodyResult = Dto.UpdateTask.safeParse(req.body);
+  if (!paramResult.success || !bodyResult.success) {
+    const errors = [];
+    if (!paramResult.success)
+      errors.push(fromZodError(paramResult.error).toString());
+    if (!bodyResult.success)
+      errors.push(fromZodError(bodyResult.error).toString());
+    return next(new Util.ApiError(errors.join("\n"), 422));
+  }
+  const updatedTask = await Service.updateTaskByTaskId(
+    paramResult.data.taskId,
+    {
+      ...bodyResult.data,
+      owner: userId,
+    }
+  );
+  return res.status(200).send(updatedTask);
 };

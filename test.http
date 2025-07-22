@@ -3,11 +3,11 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzEyNywiZXhwIjoxNzUzMTM3NzI3fQ.xbr3sssTZzGiEX-a-3DDVQjm-wmoMe2nxejqzXHTrec
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzMTkyMDA2fQ.izGMD9EFORcbTYv7HPaqDTE5Dqc2kkjjsJLyBIGUWfs
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzEyNywiZXhwIjoxNzUzNzQxOTI3fQ.wYX7EMN1omByRT7DQE5bE6QtsmCyHLgrEMpfN6E5oZ0
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzNzk2MjA2fQ.BsVq9DV-BP7wp2SwDbEiFPc2JF5g8dQZLt3bkO6zIEA
 
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzEzNzA5MSwiZXhwIjoxNzUzMTQwNjkxfQ.3P1mtCEqx_6nd7kaCeaNzGHw6iTtsRvcqeIVmASWcrM
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTM3MCwiZXhwIjoxNzUzMTk0OTcwfQ.WXHVUWvts8Y7-Wp4QcGk3cbCvLKR786Jkp7p1XmmnXY
 
 ### Health Check
 GET {{apiUrl}}/healthcheck
@@ -38,7 +38,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "code": "159319"
+    "code": "429561"
 }
 
 ### Refresh Access Token
@@ -82,6 +82,15 @@ Content-Type: application/json
 }
 
 ### Task Update
+PUT {{apiUrl}}/task/10
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "title": "Changing Title",
+    "description": "NEW DESC 123",
+    "dueDate": "2026-12-21"
+}
 
 ### Task Partial Update (change status)
 

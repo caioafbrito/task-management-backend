@@ -14,7 +14,7 @@ export const register = async (
 ) => {
   try {
     const { body } = req;
-    const result = Dto.CreateUserDto.safeParse(body);
+    const result = Dto.CreateUser.safeParse(body);
     if (!result.success)
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
     const registeredUser = await Service.registerUser(result.data);
@@ -37,7 +37,7 @@ export const login = async (
 ) => {
   try {
     const { body } = req;
-    const result = Dto.AuthenticateUserDto.safeParse(body);
+    const result = Dto.AuthenticateUser.safeParse(body);
     if (!result.success)
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
     const { is2faRequired, authToken, accessToken, refreshToken } =

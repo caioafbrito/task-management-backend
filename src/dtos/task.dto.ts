@@ -1,31 +1,31 @@
 import { z } from "zod";
 
-export const CreateTaskDto = z.object({
+export const CreateTask = z.object({
   title: z.string(),
   description: z.string().optional(),
   dueDate: z.iso.date().optional(),
   isDone: z.boolean().default(false),
 });
 
-export type CreateTaskDto = z.infer<typeof CreateTaskDto>;
-export type CreateTaskPayload = CreateTaskDto & { owner: number }; // for deep layers (services and models)
+export type CreateTask = z.infer<typeof CreateTask>;
+export type CreateTaskPayload = CreateTask & { owner: number }; // for deep layers (services and models)
 
-export const UpdateTaskDto = z.object({
-  id: z.number().nonnegative(),
-  title: z.string(),
+export const UpdateTask = z.object({
+  title: z.string().optional(),
   description: z.string().optional(),
   dueDate: z.iso.date().optional(),
-  isDone: z.boolean().default(false),
-  owner: z.number().nonnegative(),
+  isDone: z.boolean().default(false).optional(),
+  owner: z.number().nonnegative().optional(),
 });
 
-export type UpdateTaskDto = z.infer<typeof UpdateTaskDto>;
+export type UpdateTask = z.infer<typeof UpdateTask>;
+export type UpdateTaskPayload = UpdateTask & { owner: number };
 
-export const GetTaskDto = z.object({
+export const TaskIdParam = z.object({
   taskId: z
     .string()
     .regex(/^\d+$/, "taskId param must be numeric.")
     .transform((string) => Number(string)),
 });
 
-export type GetTaskDto = z.infer<typeof GetTaskDto>;
+export type TaskIdParam = z.infer<typeof TaskIdParam>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateUserDto = z.object({
+export const CreateUser = z.object({
     name: z.string().max(255),
     age: z.number().gt(0),
     email: z.email().max(255),
@@ -8,11 +8,11 @@ export const CreateUserDto = z.object({
     '2fa_enabled': z.boolean().optional().default(false),
 });
 
-export type CreateUserDto = z.infer<typeof CreateUserDto>;
+export type CreateUser = z.infer<typeof CreateUser>;
 
-export const AuthenticateUserDto = z.object({
+export const AuthenticateUser = z.object({
     email: z.email("Invalid e-mail provided."),
     password: z.string()
 });
 
-export type AuthenticateUserDto = z.infer<typeof AuthenticateUserDto>;
+export type AuthenticateUser = z.infer<typeof AuthenticateUser>;

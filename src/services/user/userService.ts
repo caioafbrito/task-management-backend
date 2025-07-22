@@ -1,6 +1,6 @@
 import * as UserModel from "models/userModel.js";
 import * as UserError from "./userError.js";
-import { CreateUserDto } from "dtos/user.dto.js";
+import * as UserDto from "dtos/user.dto.js";
 import bcrypt from "bcryptjs";
 
 export const findUserById = async (userId: number) => {
@@ -15,7 +15,7 @@ export const findUserByEmail = async (email: string) => {
   return user;
 };
 
-export const registerUser = async (userData: CreateUserDto) => {
+export const registerUser = async (userData: UserDto.CreateUser) => {
   const userWithSameEmail = await UserModel.findUserByEmail(userData.email);
   if (userWithSameEmail) throw new UserError.DuplicatedUserEmailError();
   const hashedPassword = await bcrypt.hash(userData.password, 10);
