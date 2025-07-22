@@ -83,11 +83,24 @@ export const patchTaskStatus = async (
       errors.push(fromZodError(bodyResult.error).toString());
     return next(new Util.ApiError(errors.join("\n"), 422));
   }
-  const taskChanged = await Service.changeTaskStatusByUserIdAndTaskId(
+  await Service.changeTaskStatusByUserIdAndTaskId(
     userId,
     paramResult.data.taskId,
     bodyResult.data.isDone
   );
-  if (taskChanged) return res.status(202).send();
-  return res.status(200).send();
+  return res.status(204).send();
+};
+
+export const deleteTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.user;
+  const result = Dto.TaskIdParam.safeParse(req.params);
+  if (!result.success) {
+    return next(new Util.ApiError(fromZodError(result.error).toString(), 400));
+  }
+  await Service.removeTaskByUserIdAndTaskId(userId, result.data.taskId);
+  return res.status(204).send();
 };

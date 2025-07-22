@@ -51,6 +51,11 @@ export const updateTaskStatusByUserIdAndTaskId = async (
     .where(and(eq(tasks.owner, userId), eq(tasks.id, taskId)));
 };
 
-export const deleteTaskByTaskId = async (taskId: number) => {
-  return await db.delete(tasks).where(eq(tasks.id, taskId));
+export const deleteTaskByUserIdAndTaskId = async (
+  userId: number,
+  taskId: number
+) => {
+  return await db
+    .delete(tasks)
+    .where(and(eq(tasks.owner, userId), eq(tasks.id, taskId)));
 };

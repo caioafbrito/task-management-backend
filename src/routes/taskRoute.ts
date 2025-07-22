@@ -9,4 +9,6 @@ router.get("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskCo
 router.post("/task", Middleware.authCheck, Middleware.checkUserId, TaskController.postTask);
 router.put("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskController.putTask);
 router.patch("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskController.patchTaskStatus);
+router.delete("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskController.deleteTask)
+
 export default router;

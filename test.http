@@ -3,7 +3,7 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5NTM3OSwiZXhwIjoxNzUzMTk1OTc5fQ.DgbSKxwEfFbxm2Ir34xlnefS0yx3wdJhfQM7ZktF32k
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzIxOTA4NywiZXhwIjoxNzUzMjE5Njg3fQ.RrRqrXXezPcDa3A3iRxqf5izJxLRjzInI2tu7it0DjE
 
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzNzk2MjA2fQ.BsVq9DV-BP7wp2SwDbEiFPc2JF5g8dQZLt3bkO6zIEA
 
@@ -68,7 +68,6 @@ Content-Type: application/json
 ### Specific Task
 GET {{apiUrl}}/task/10
 Authorization: Bearer {{accessToken}}
-Content-Type: application/json
 
 ### Task Creation
 POST {{apiUrl}}/task
@@ -102,3 +101,5 @@ Content-Type: application/json
 }
 
 ### Task Deletion 
+DELETE {{apiUrl}}/task/10
+Authorization: Bearer {{accessToken}}
