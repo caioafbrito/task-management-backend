@@ -13,7 +13,7 @@ export const findUserByEmail = async (email: string) => {
   return user;
 };
 
-export const createUser = async (userData: CreateUserDto) => {
+export const insertUser = async (userData: CreateUserDto) => {
   const [user] = await db
     .insert(users)
     .values(userData)

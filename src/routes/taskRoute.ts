@@ -5,7 +5,7 @@ import * as Middleware from "middlewares/index.js";
 const router = Router();
 
 router.get("/task", Middleware.authCheck, Middleware.checkUserId, TaskController.getAllTasks);
-router.get("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskController.getTaskById)
-router.post("/task", Middleware.authCheck, Middleware.checkUserId, TaskController.createTaskController);
+router.get("/task/:taskId", Middleware.authCheck, Middleware.checkUserId, TaskController.getTask)
+router.post("/task", Middleware.authCheck, Middleware.checkUserId, TaskController.postTask);
 
 export default router;

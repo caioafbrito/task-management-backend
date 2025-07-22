@@ -22,7 +22,7 @@ export const getTaskByUserIdAndTaskId = async (
   return task;
 };
 
-export const createTask = async (task: CreateTaskPayload) => {
+export const insertTask = async (task: CreateTaskPayload) => {
   const result = await db.insert(tasks).values(task).returning();
   return result[0];
 };

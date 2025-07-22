@@ -20,7 +20,7 @@ export const registerUser = async (userData: CreateUserDto) => {
   if (userWithSameEmail) throw new UserError.DuplicatedUserEmailError();
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const userToCreate = { ...userData, password: hashedPassword };
-  return await UserModel.createUser(userToCreate);
+  return await UserModel.insertUser(userToCreate);
 };
 
 export const change2faSecret = async (

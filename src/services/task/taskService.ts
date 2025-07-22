@@ -9,7 +9,6 @@ export const listTasksByUserIdAndTaskId = async(userId: number, taskId: number) 
     return await TaskModel.getTaskByUserIdAndTaskId(userId, taskId);
 }
 
-
-export const createNewTask = async(task: TaskDto.CreateTaskPayload) => {
-    return await TaskModel.createTask(task);
+export const createTask = async(task: TaskDto.CreateTaskPayload) => {
+    return await TaskModel.insertTask(task);
 }
