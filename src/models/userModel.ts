@@ -1,19 +1,34 @@
 import db from "../db/connection.js";
 import { users } from "db/schema.js";
 import { eq } from "drizzle-orm";
-import type { CreateUserDto } from "dtos/user.dto.js";
+import type { CreateUser } from "dtos/user.dto.js";
+
+const publicFields = {
+  name: users.name,
+  email: users.email,
+  "2faEnabled": users["2faEnabled"],
+  age: users.age,
+  createdAt: users.createdAt,
+  updatedAt: users.updatedAt,
+};
 
 export const findUserById = async (id: number) => {
-  const [user] = await db.select().from(users).where(eq(users.id, id));
+  const [user] = await db
+    .select(publicFields)
+    .from(users)
+    .where(eq(users.id, id));
   return user;
 };
 
 export const findUserByEmail = async (email: string) => {
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  const [user] = await db
+    .select(publicFields)
+    .from(users)
+    .where(eq(users.email, email));
   return user;
 };
 
-export const insertUser = async (userData: CreateUserDto) => {
+export const insertUser = async (userData: CreateUser) => {
   const [user] = await db
     .insert(users)
     .values(userData)

@@ -3,14 +3,18 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzIxOTA4NywiZXhwIjoxNzUzMjE5Njg3fQ.RrRqrXXezPcDa3A3iRxqf5izJxLRjzInI2tu7it0DjE
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzIyMDIxMywiZXhwIjoxNzUzMjIwODEzfQ.dsuTXgVlxcCN5afiSrzZkYyE4lt6jj1QplnASchpj0I
 
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzNzk2MjA2fQ.BsVq9DV-BP7wp2SwDbEiFPc2JF5g8dQZLt3bkO6zIEA
 
 @authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTM3MCwiZXhwIjoxNzUzMTk0OTcwfQ.WXHVUWvts8Y7-Wp4QcGk3cbCvLKR786Jkp7p1XmmnXY
 
+### === API STATUS === ###
+
 ### Health Check
 GET {{apiUrl}}/healthcheck
+
+### === AUTH ENDPOINTS === ###
 
 ### Register
 POST {{apiUrl}}/auth/register
@@ -60,13 +64,15 @@ Content-Type: application/json
     "code": "029785"
 }
 
+### === TASK ENDPOINTS === ###
+
 ### Task List
 GET {{apiUrl}}/task
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 ### Specific Task
-GET {{apiUrl}}/task/10
+GET {{apiUrl}}/task/11
 Authorization: Bearer {{accessToken}}
 
 ### Task Creation
@@ -75,24 +81,22 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-    "title": "Other task 2",
-    "description": "Testing the description 123",
-    "dueDate": "2025-11-21"
+    "title": "This task is insane!",
+    "description": "LOOK AT MY NEW TASK. LET'S GO!!!",
+    "dueDate": "2021-05-11"
 }
 
 ### Task Update
-PUT {{apiUrl}}/task/10
+PUT {{apiUrl}}/task/11
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-    "title": "Changing Title",
-    "description": "NEW DESC 123",
-    "dueDate": "2026-12-21"
+    "title": "Now, it's not"
 }
 
 ### Task Partial Update (change status)
-PATCH {{apiUrl}}/task/8
+PATCH {{apiUrl}}/task/11
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -101,5 +105,11 @@ Content-Type: application/json
 }
 
 ### Task Deletion 
-DELETE {{apiUrl}}/task/10
+DELETE {{apiUrl}}/task/9
+Authorization: Bearer {{accessToken}}
+
+### === USER ENDPOINTS === ###
+
+### User Data (for logged user)
+GET {{apiUrl}}/user
 Authorization: Bearer {{accessToken}}
