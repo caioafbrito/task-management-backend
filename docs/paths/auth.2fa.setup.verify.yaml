@@ -17,21 +17,21 @@ post:
     "204":
       description: Valid code. 2FA enabled successfully.
     "400":
-      description: Invalid 2FA code.
+      description: The code is invalid.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
           example:
-            message: Invalid 2FA code.
+            message: The code is invalid.
     "404":
-      description: 2FA secret not found for user.
+      description: Secret not found.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
           example:
-            message: 2FA secret not found.
+            message: Secret not found.
     "422":
       description: Invalid request payload.
       content:
@@ -39,7 +39,7 @@ post:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
     "500":
-      description: Unexpected error.
+      description: Unknown Error.
       content:
         application/json:
           schema:

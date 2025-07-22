@@ -22,7 +22,7 @@ get:
           example:
             message: User not found.
     "500":
-      description: Internal server error. If it persists, contact the admin.
+      description: Unknown Error.
       content:
         application/json:
           schema:

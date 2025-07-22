@@ -10,8 +10,8 @@ servers:
 paths:
   /auth/register:
     post:
-      summary: Let you register in the App
-      description: This route creates a new user.
+      summary: Register a new user
+      description: This endpoint creates a user.
       operationId: registerUser
       tags:
         - Auth
@@ -23,13 +23,13 @@ paths:
               $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '201':
-          description: User created!
+          description: User created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
         '409':
-          description: The App already has a user with the email provided.
+          description: The email provided is already in use.
           content:
             application/json:
               schema:
@@ -37,13 +37,15 @@ paths:
               example:
                 message: The email provided is already in use.
         '422':
-          description: Your request does not follow the body pattern or some field does not follow some constraint.
+          description: The request does not follow the body pattern or some field does not follow some constraint.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Your request does not follow the body pattern or some field does not follow some constraint.
         '500':
-          description: Internal server error. If it persists, contact the admin.
+          description: Unknown Error.
           content:
             application/json:
               schema:
@@ -52,8 +54,8 @@ paths:
                 message: Unknown Error.
   /auth/login:
     post:
-      summary: Let you login in the App
-      description: This route checks the credentials and logs the user into App.
+      summary: Log in to the application
+      description: This endpoint authenticates the user and returns access credentials.
       operationId: loginUser
       tags:
         - Auth
@@ -65,13 +67,23 @@ paths:
               $ref: '#/components/schemas/AuthenticateUserRequest'
       responses:
         '200':
-          description: User successfully passed into authentication!
+          description: User authenticated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthenticateUserResponse'
+        '202':
+          description: 2FA required. Temporary token sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authToken:
+                    type: string
+                    description: Temporary token for 2FA verification
         '401':
-          description: Invalid credentials (email and/or password).
+          description: Invalid credentials.
           content:
             application/json:
               schema:
@@ -87,13 +99,15 @@ paths:
               example:
                 message: User not found.
         '422':
-          description: Your request does not follow the body pattern or some field does not follow some constraint.
+          description: The request does not follow the body pattern or some field does not follow some constraint.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Your request does not follow the body pattern or some field does not follow some constraint.
         '500':
-          description: Internal server error. If it persists, contact the admin.
+          description: Unknown Error.
           content:
             application/json:
               schema:
@@ -103,8 +117,7 @@ paths:
   /auth/refresh-access-token:
     post:
       summary: Refresh access token
-      description: |
-        Generates a new access token using a valid refresh token provided via cookie named `refreshToken`.
+      description: Generates a new access token using a valid refresh token provided via the `refreshToken` cookie.
       tags:
         - Auth
       parameters:
@@ -113,7 +126,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Refresh token required in cookie
+          description: Refresh token (JWT) provided in cookie.
       responses:
         '200':
           description: New access token generated successfully
@@ -124,9 +137,9 @@ paths:
                 properties:
                   newAccessToken:
                     type: string
-                    description: JWT access token for authenticated endpoints
+                    description: JWT access token to use in authenticated endpoints
         '400':
-          description: Refresh token is missing from the cookies (refreshToken missing (cookie))
+          description: refreshToken missing (cookie)
           content:
             application/json:
               schema:
@@ -134,11 +147,7 @@ paths:
               example:
                 message: refreshToken missing (cookie)
         '401':
-          description: |
-            Refresh token is expired, invalid, malformed, or not yet active. Examples: 
-              - Refresh token expired (TokenExpiredError) 
-              - Invalid refresh token or malformed request (JsonWebTokenError) 
-              - Refresh token is not yet active (NotBeforeError)
+          description: Invalid or expired authentication token.
           content:
             application/json:
               schema:
@@ -146,26 +155,26 @@ paths:
               examples:
                 TokenExpiredError:
                   value:
-                    message: Refresh token expired
+                    message: Invalid or expired authentication token.
                 JsonWebTokenError:
                   value:
-                    message: Invalid refresh token or malformed request.
+                    message: Invalid or expired authentication token.
                 NotBeforeError:
                   value:
-                    message: Refresh token is not yet active
+                    message: Invalid or expired authentication token.
         '500':
-          description: Unexpected authentication error (An unexpected authentication error occurred.)
+          description: Unknown Error.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: Unknown Error
+                message: Unknown Error.
   /auth/2fa/enable:
     post:
-      summary: Generate 2FA QR Code for logged user
+      summary: Generate 2FA QR Code for the authenticated user
       description: |
-        Returns a PNG image with a QR code for 2FA setup.  
+        Returns a PNG image with the QR Code for two-factor authentication setup.
         Requires authentication (JWT Bearer Token).
       tags:
         - Auth
@@ -188,13 +197,13 @@ paths:
               example:
                 message: 2FA is already active.
         '500':
-          description: Failed to generate QR code or unexpected error.
+          description: An error occurred during QR Code generation.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: Unknown Error.
+                message: An error occurred during QR Code generation.
   /auth/2fa/setup/verify:
     post:
       summary: Validate 2FA code during setup
@@ -215,21 +224,21 @@ paths:
         '204':
           description: Valid code. 2FA enabled successfully.
         '400':
-          description: Invalid 2FA code.
+          description: The code is invalid.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: Invalid 2FA code.
+                message: The code is invalid.
         '404':
-          description: 2FA secret not found for user.
+          description: Secret not found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: 2FA secret not found.
+                message: Secret not found.
         '422':
           description: Invalid request payload.
           content:
@@ -237,7 +246,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: Unexpected error.
+          description: Unknown Error.
           content:
             application/json:
               schema:
@@ -248,8 +257,8 @@ paths:
     post:
       summary: Authenticate user via 2FA after login
       description: |
-        Receives a 2FA code, validates it, and returns accessToken in response and refreshToken as a cookie.  
-        The user must already be partially authenticated (temporary auth token).
+        Receives a 2FA code, validates it, and returns an accessToken in response and sets a refreshToken as a cookie.  
+        The user must be partially authenticated (temporary authentication token).
       tags:
         - Auth
       security:
@@ -272,29 +281,61 @@ paths:
                     type: string
                     description: JWT to use for authenticated endpoints
         '400':
-          description: Invalid 2FA code.
+          description: The code is invalid.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: Invalid 2FA code.
+                message: The code is invalid.
         '404':
-          description: 2FA secret not found.
+          description: Secret not found.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: 2FA secret not found.
+                message: Secret not found.
         '422':
-          description: Invalid payload.
+          description: Invalid request payload.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: Internal error.
+          description: Unknown Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown Error.
+  /user:
+    get:
+      summary: Get logged user information
+      description: Returns the profile information of the authenticated user.
+      operationId: getUserProfile
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: User not found.
+        '500':
+          description: Unknown Error.
           content:
             application/json:
               schema:
@@ -318,11 +359,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Task'
         '401':
-          description: Not authenticated
+          description: Invalid or expired authentication token.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Invalid or expired authentication token.
     post:
       summary: Create a new task
       tags:
@@ -348,6 +391,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Your request does not follow the body pattern or some field does not follow some constraint.
   /task/{taskId}:
     get:
       summary: Get a task by its ID (for authenticated user)
@@ -370,17 +415,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/Task'
         '400':
-          description: Invalid taskId parameter
+          description: The parameter taskId must be numeric.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: taskId param must be numeric.
         '401':
-          description: Not authenticated
+          description: Invalid or expired authentication token.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Invalid or expired authentication token.
     put:
       summary: Update all properties of a task
       tags:
@@ -412,6 +461,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Your request does not follow the body pattern or some field does not follow some constraint.
     patch:
       summary: Update only the status (isDone) of a task
       tags:
@@ -434,11 +485,13 @@ paths:
         '204':
           description: Task status updated successfully
         '422':
-          description: Invalid parameter or body
+          description: The request does not follow the body pattern or some field does not follow some constraint.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Your request does not follow the body pattern or some field does not follow some constraint.
     delete:
       summary: Delete a task
       tags:
@@ -455,43 +508,13 @@ paths:
         '204':
           description: Task deleted
         '400':
-          description: Invalid taskId parameter
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /user:
-    get:
-      summary: Get logged user information
-      description: Returns the profile information of the authenticated user.
-      operationId: getUserProfile
-      tags:
-        - User
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: User profile information
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: User not found
+          description: The parameter taskId must be numeric.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
-                message: User not found.
-        '500':
-          description: Internal server error. If it persists, contact the admin.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                message: Unknown Error.
+                message: taskId param must be numeric.
 components:
   securitySchemes:
     bearerAuth:
@@ -507,7 +530,7 @@ components:
           maxLength: 255
           description: User name (required)
         age:
-          type: number
+          type: integer
           minimum: 1
           description: User age (required)
         email:
@@ -518,10 +541,10 @@ components:
         password:
           type: string
           description: User password (required)
-        2faEnabled:
+        twoFactorEnabled:
           type: boolean
           default: false
-          description: If the user want 2faEnabled (optional, default=false)
+          description: Enable two-factor authentication (optional, defaults to false)
       required:
         - name
         - age
@@ -531,24 +554,17 @@ components:
       type: object
       properties:
         userId:
-          type: string
+          type: integer
           description: User ID
         userName:
           type: string
-          description: User name
+          description: Name of the user
     ErrorResponse:
       type: object
       properties:
         message:
           type: string
-          description: Human-readable error message describing the problem
-        code:
-          type: string
-          description: Application-specific error code (optional)
-        details:
-          type: object
-          description: Additional error details (optional, can include validation field errors)
-          additionalProperties: true
+          description: Error description
       required:
         - message
     AuthenticateUserRequest:
@@ -558,7 +574,7 @@ components:
           type: string
           maxLength: 255
           format: email
-          description: User email (required)
+          description: Email address (required)
         password:
           type: string
           description: User password (required)
@@ -570,7 +586,13 @@ components:
       properties:
         accessToken:
           type: string
-          description: JWT access token to use when accessing endpoints
+          description: JWT access token to use for authenticated endpoints
+        is2faRequired:
+          type: boolean
+          description: Indicates if 2FA is required for this user
+        authToken:
+          type: string
+          description: Temporary token for 2FA flow (if applicable)
     MultipleFactorAuthDto:
       type: object
       properties:
@@ -581,6 +603,18 @@ components:
           maxLength: 6
       required:
         - code
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        twoFactorEnabled:
+          type: boolean
+          description: Indicates if two-factor authentication is enabled for the user
     Task:
       type: object
       properties:
@@ -635,14 +669,3 @@ components:
           type: boolean
       required:
         - isDone
-    User:
-      type: object
-      properties:
-        id:
-          type: number
-        name:
-          type: string
-        email:
-          type: string
-        2faEnabled:
-          type: boolean

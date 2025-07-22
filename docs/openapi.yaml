@@ -20,12 +20,12 @@ paths:
     $ref: "./paths/auth.2fa.setup.verify.yaml"
   /auth/2fa/verify:
     $ref: "./paths/auth.2fa.verify.yaml"
+  /user:
+    $ref: "./paths/user.yaml"
   /task:
     $ref: "./paths/task.yaml"
   /task/{taskId}:
     $ref: "./paths/task.{taskId}.yaml"
-  /user:
-    $ref: "./paths/user.yaml"
 components:
   securitySchemes:
     bearerAuth:

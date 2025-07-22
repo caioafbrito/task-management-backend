@@ -1,6 +1,6 @@
 post:
-  summary: Let you login in the App
-  description: This route checks the credentials and logs the user into App.
+  summary: Log in to the application
+  description: This endpoint authenticates the user and returns access credentials.
   operationId: loginUser
   tags:
     - Auth
@@ -12,13 +12,23 @@ post:
           $ref: "../schemas/user.yaml#/AuthenticateUserRequest"
   responses:
     "200":
-      description: User successfully passed into authentication!
+      description: User authenticated successfully
       content:
         application/json:
           schema:
             $ref: "../schemas/user.yaml#/AuthenticateUserResponse"
+    "202":
+      description: 2FA required. Temporary token sent.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              authToken:
+                type: string
+                description: Temporary token for 2FA verification
     "401":
-      description: Invalid credentials (email and/or password).
+      description: Invalid credentials.
       content:
         application/json:
           schema:
@@ -34,13 +44,15 @@ post:
           example:
             message: User not found.
     "422":
-      description: Your request does not follow the body pattern or some field does not follow some constraint.
+      description: The request does not follow the body pattern or some field does not follow some constraint.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Your request does not follow the body pattern or some field does not follow some constraint.
     "500":
-      description: Internal server error. If it persists, contact the admin.
+      description: Unknown Error.
       content:
         application/json:
           schema:

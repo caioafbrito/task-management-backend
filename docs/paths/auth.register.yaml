@@ -1,6 +1,6 @@
 post:
-  summary: Let you register in the App
-  description: This route creates a new user.
+  summary: Register a new user
+  description: This endpoint creates a user.
   operationId: registerUser
   tags:
     - Auth
@@ -12,13 +12,13 @@ post:
           $ref: "../schemas/user.yaml#/CreateUserRequest"
   responses:
     "201":
-      description: User created!
+      description: User created successfully
       content:
         application/json:
           schema:
             $ref: "../schemas/user.yaml#/CreateUserResponse"
     "409":
-      description: The App already has a user with the email provided.
+      description: The email provided is already in use.
       content:
         application/json:
           schema:
@@ -26,13 +26,15 @@ post:
           example:
             message: The email provided is already in use.
     "422":
-      description: Your request does not follow the body pattern or some field does not follow some constraint.
+      description: The request does not follow the body pattern or some field does not follow some constraint.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Your request does not follow the body pattern or some field does not follow some constraint.
     "500":
-      description: Internal server error. If it persists, contact the admin.
+      description: Unknown Error.
       content:
         application/json:
           schema:

@@ -1,8 +1,8 @@
 post:
   summary: Authenticate user via 2FA after login
   description: |
-    Receives a 2FA code, validates it, and returns accessToken in response and refreshToken as a cookie.  
-    The user must already be partially authenticated (temporary auth token).
+    Receives a 2FA code, validates it, and returns an accessToken in response and sets a refreshToken as a cookie.  
+    The user must be partially authenticated (temporary authentication token).
   tags:
     - Auth
   security:
@@ -25,29 +25,29 @@ post:
                 type: string
                 description: JWT to use for authenticated endpoints
     "400":
-      description: Invalid 2FA code.
+      description: The code is invalid.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
           example:
-            message: Invalid 2FA code.
+            message: The code is invalid.
     "404":
-      description: 2FA secret not found.
+      description: Secret not found.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
           example:
-            message: 2FA secret not found.
+            message: Secret not found.
     "422":
-      description: Invalid payload.
+      description: Invalid request payload.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
     "500":
-      description: Internal error.
+      description: Unknown Error.
       content:
         application/json:
           schema:

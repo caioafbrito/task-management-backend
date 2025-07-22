@@ -18,17 +18,21 @@ get:
           schema:
             $ref: "../schemas/task.yaml#/Task"
     "400":
-      description: Invalid taskId parameter
+      description: The parameter taskId must be numeric.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: taskId param must be numeric.
     "401":
-      description: Not authenticated
+      description: Invalid or expired authentication token.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Invalid or expired authentication token.
 put:
   summary: Update all properties of a task
   tags: [Task]
@@ -59,6 +63,8 @@ put:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Your request does not follow the body pattern or some field does not follow some constraint.
 patch:
   summary: Update only the status (isDone) of a task
   tags: [Task]
@@ -80,11 +86,13 @@ patch:
     "204":
       description: Task status updated successfully
     "422":
-      description: Invalid parameter or body
+      description: The request does not follow the body pattern or some field does not follow some constraint.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Your request does not follow the body pattern or some field does not follow some constraint.
 delete:
   summary: Delete a task
   tags: [Task]
@@ -100,8 +108,10 @@ delete:
     "204":
       description: Task deleted
     "400":
-      description: Invalid taskId parameter
+      description: The parameter taskId must be numeric.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: taskId param must be numeric.

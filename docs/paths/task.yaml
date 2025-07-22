@@ -13,11 +13,13 @@ get:
             items:
               $ref: "../schemas/task.yaml#/Task"
     "401":
-      description: Not authenticated
+      description: Invalid or expired authentication token.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Invalid or expired authentication token.
 post:
   summary: Create a new task
   tags: [Task]
@@ -42,3 +44,5 @@ post:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Your request does not follow the body pattern or some field does not follow some constraint.

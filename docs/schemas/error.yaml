@@ -3,13 +3,6 @@ ErrorResponse:
   properties:
     message:
       type: string
-      description: Human-readable error message describing the problem
-    code:
-      type: string
-      description: Application-specific error code (optional)
-    details:
-      type: object
-      description: Additional error details (optional, can include validation field errors)
-      additionalProperties: true
+      description: Error description
   required:
     - message

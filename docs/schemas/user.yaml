@@ -2,13 +2,14 @@ User:
   type: object
   properties:
     id:
-      type: number
+      type: integer
     name:
       type: string
     email:
       type: string
-    2faEnabled:
+    twoFactorEnabled:
       type: boolean
+      description: Indicates if two-factor authentication is enabled for the user
 
 CreateUserRequest:
   type: object
@@ -18,7 +19,7 @@ CreateUserRequest:
       maxLength: 255
       description: User name (required)
     age:
-      type: number
+      type: integer
       minimum: 1
       description: User age (required)
     email:
@@ -29,10 +30,10 @@ CreateUserRequest:
     password:
       type: string
       description: User password (required)
-    2faEnabled:
+    twoFactorEnabled:
       type: boolean
       default: false
-      description: If the user want 2faEnabled (optional, default=false)
+      description: Enable two-factor authentication (optional, defaults to false)
   required:
     - name
     - age
@@ -43,11 +44,11 @@ CreateUserResponse:
   type: object
   properties:
     userId:
-      type: string
+      type: integer
       description: User ID
     userName:
       type: string
-      description: User name
+      description: Name of the user
 
 AuthenticateUserRequest:
   type: object
@@ -56,7 +57,7 @@ AuthenticateUserRequest:
       type: string
       maxLength: 255
       format: email
-      description: User email (required)
+      description: Email address (required)
     password:
       type: string
       description: User password (required)
@@ -69,4 +70,10 @@ AuthenticateUserResponse:
   properties:
     accessToken:
       type: string
-      description: JWT access token to use when accessing endpoints
+      description: JWT access token to use for authenticated endpoints
+    is2faRequired:
+      type: boolean
+      description: Indicates if 2FA is required for this user
+    authToken:
+      type: string
+      description: Temporary token for 2FA flow (if applicable)

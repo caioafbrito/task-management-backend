@@ -1,7 +1,7 @@
 post:
-  summary: Generate 2FA QR Code for logged user
+  summary: Generate 2FA QR Code for the authenticated user
   description: |
-    Returns a PNG image with a QR code for 2FA setup.  
+    Returns a PNG image with the QR Code for two-factor authentication setup.
     Requires authentication (JWT Bearer Token).
   tags:
     - Auth
@@ -24,10 +24,10 @@ post:
           example:
             message: 2FA is already active.
     "500":
-      description: Failed to generate QR code or unexpected error.
+      description: An error occurred during QR Code generation.
       content:
         application/json:
           schema:
             $ref: "../schemas/error.yaml#/ErrorResponse"
           example:
-            message: Unknown Error.
+            message: An error occurred during QR Code generation.
