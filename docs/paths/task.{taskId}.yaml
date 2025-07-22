@@ -1,0 +1,107 @@
+get:
+  summary: Get a task by its ID (for authenticated user)
+  tags: [Task]
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: taskId
+      schema:
+        type: integer
+      required: true
+      description: Task ID
+  responses:
+    "200":
+      description: Task found
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/task.yaml#/Task"
+    "400":
+      description: Invalid taskId parameter
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+    "401":
+      description: Not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+put:
+  summary: Update all properties of a task
+  tags: [Task]
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: taskId
+      schema:
+        type: integer
+      required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/task.yaml#/UpdateTask"
+  responses:
+    "200":
+      description: Task updated
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/task.yaml#/Task"
+    "422":
+      description: Invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+patch:
+  summary: Update only the status (isDone) of a task
+  tags: [Task]
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: taskId
+      schema:
+        type: integer
+      required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/task.yaml#/ChangeTaskStatus"
+  responses:
+    "204":
+      description: Task status updated successfully
+    "422":
+      description: Invalid parameter or body
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+delete:
+  summary: Delete a task
+  tags: [Task]
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: taskId
+      schema:
+        type: integer
+      required: true
+  responses:
+    "204":
+      description: Task deleted
+    "400":
+      description: Invalid taskId parameter
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"

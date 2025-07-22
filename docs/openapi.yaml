@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:4000/api/v1
     description: Local development
-  - url: https://api.seusite.com/api/v1
+  - url: https://api.yoursite.com/api/v1
     description: Production
 paths:
   /auth/register:
@@ -14,13 +14,21 @@ paths:
     $ref: "./paths/auth.login.yaml"
   /auth/refresh-access-token:
     $ref: "./paths/auth.refreshAccessToken.yaml"
+  /auth/2fa/enable:
+    $ref: "./paths/auth.2fa.enable.yaml"
+  /auth/2fa/setup/verify:
+    $ref: "./paths/auth.2fa.setup.verify.yaml"
+  /auth/2fa/verify:
+    $ref: "./paths/auth.2fa.verify.yaml"
   /task:
     $ref: "./paths/task.yaml"
+  /task/{taskId}:
+    $ref: "./paths/task.{taskId}.yaml"
+  /user:
+    $ref: "./paths/user.yaml"
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-

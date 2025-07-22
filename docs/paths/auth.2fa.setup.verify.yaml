@@ -1,0 +1,48 @@
+post:
+  summary: Validate 2FA code during setup
+  description: |
+    Confirms the 2FA setup by validating the code sent by the user.  
+    Requires authentication (JWT Bearer Token).
+  tags:
+    - Auth
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/auth.yaml#/MultipleFactorAuthDto"
+  responses:
+    "204":
+      description: Valid code. 2FA enabled successfully.
+    "400":
+      description: Invalid 2FA code.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Invalid 2FA code.
+    "404":
+      description: 2FA secret not found for user.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: 2FA secret not found.
+    "422":
+      description: Invalid request payload.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+    "500":
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+          example:
+            message: Unknown Error.

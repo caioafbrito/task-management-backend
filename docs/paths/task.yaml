@@ -1,16 +1,44 @@
 get:
-  summary: Here you can get all tasks of some user
-  description: After login, you can call this endpoint to get all tasks of the user.
-  tags:
-    - Task
+  summary: Get all tasks for the authenticated user
+  tags: [Task]
+  security:
+    - bearerAuth: []
   responses:
     "200":
-      description: All tasks returned!
+      description: List of the user's tasks
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: '../schemas/task.yaml#/Task'
+              $ref: "../schemas/task.yaml#/Task"
+    "401":
+      description: Not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"
+post:
+  summary: Create a new task
+  tags: [Task]
   security:
     - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/task.yaml#/CreateTask"
+  responses:
+    "201":
+      description: Task created successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/task.yaml#/Task"
+    "422":
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/error.yaml#/ErrorResponse"

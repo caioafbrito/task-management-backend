@@ -2,14 +2,56 @@ Task:
   type: object
   properties:
     id:
-      type: number
+      type: integer
+    title:
+      type: string
+    description:
+      type: string
+      nullable: true
+    dueDate:
+      type: string
+      format: date
+      nullable: true
+    isDone:
+      type: boolean
     owner:
-      type: number
+      type: integer
+
+CreateTask:
+  type: object
+  properties:
     title:
       type: string
     description:
       type: string
     dueDate:
-      type: date
+      type: string
+      format: date
     isDone:
       type: boolean
+      default: false
+  required:
+    - title
+
+UpdateTask:
+  type: object
+  properties:
+    title:
+      type: string
+    description:
+      type: string
+    dueDate:
+      type: string
+      format: date
+    isDone:
+      type: boolean
+    owner:
+      type: integer
+
+ChangeTaskStatus:
+  type: object
+  properties:
+    isDone:
+      type: boolean
+  required:
+    - isDone
