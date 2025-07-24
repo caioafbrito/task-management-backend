@@ -3,12 +3,6 @@
 
 @apiUrl = {{host}}{{apiPath}}
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzIyMDIxMywiZXhwIjoxNzUzMjIwODEzfQ.dsuTXgVlxcCN5afiSrzZkYyE4lt6jj1QplnASchpj0I
-
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTQwNiwiZXhwIjoxNzUzNzk2MjA2fQ.BsVq9DV-BP7wp2SwDbEiFPc2JF5g8dQZLt3bkO6zIEA
-
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlZpdG9yIE11cmFva2EiLCJ1c2VySWQiOjUsImlhdCI6MTc1MzE5MTM3MCwiZXhwIjoxNzUzMTk0OTcwfQ.WXHVUWvts8Y7-Wp4QcGk3cbCvLKR786Jkp7p1XmmnXY
-
 ### === API STATUS === ###
 
 ### Health Check
@@ -28,27 +22,41 @@ Content-Type: application/json
 }
 
 ### Login
+# @name auth
 POST {{apiUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "vitor.muraoka@developz.com.br",
-    "password": "vitor123"
+    "email": "caio@mail.com",
+    "password": "12345"
 }
 
+###
+
+@accessToken = {{auth.response.body.accessToken}}
+@authToken = {{auth.response.body.authToken}}
+
 ### Verify 2FA (login proccess)
+# @name 2fa
 POST {{apiUrl}}/auth/2fa/verify
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "code": "429561"
+    "code": "315160"
 }
 
+###
+
+@accessToken = {{2fa.response.body.accessToken}}
+
 ### Refresh Access Token
+# @name refresh
 POST {{apiUrl}}/auth/refresh-access-token
-Cookie: refreshToken={{refreshToken}}
-Content-Type: application/json
+
+###
+
+@accessToken = {{refresh.response.body.newAccessToken}}
 
 ### Enable 2FA
 POST {{apiUrl}}/auth/2fa/enable
@@ -72,7 +80,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 ### Specific Task
-GET {{apiUrl}}/task/11
+GET {{apiUrl}}/task/12
 Authorization: Bearer {{accessToken}}
 
 ### Task Creation
@@ -87,7 +95,7 @@ Content-Type: application/json
 }
 
 ### Task Update
-PUT {{apiUrl}}/task/11
+PUT {{apiUrl}}/task/12
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -96,7 +104,7 @@ Content-Type: application/json
 }
 
 ### Task Partial Update (change status)
-PATCH {{apiUrl}}/task/11
+PATCH {{apiUrl}}/task/13
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -105,7 +113,7 @@ Content-Type: application/json
 }
 
 ### Task Deletion 
-DELETE {{apiUrl}}/task/9
+DELETE {{apiUrl}}/task/12
 Authorization: Bearer {{accessToken}}
 
 ### === USER ENDPOINTS === ###

@@ -14,7 +14,7 @@ export const loginUser = async (authData: AuthenticateUser) => {
     password: hashedPass,
     id: userId,
     name: userName,
-  } = await Service.findUserByEmail(email);
+  } = await Service.findUserByEmail(email, true);
 
   const isPassCorrect = await bcrypt.compare(password, hashedPass);
   if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
