@@ -24,6 +24,8 @@ export const register = async (
       next(new Util.ApiError(error.message, 409));
     } else if (error instanceof Util.ApiError) {
       next(error);
+    } else if (error instanceof Error) {
+      next(new Util.ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new Util.ApiError("Unknown Error", 500));
     }
@@ -64,6 +66,8 @@ export const login = async (
       next(new Util.ApiError(error.message, 401));
     } else if (error instanceof Util.ApiError) {
       next(error);
+    } else if (error instanceof Error) {
+      next(new Util.ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new Util.ApiError("Unknown Error", 500));
     }
@@ -80,7 +84,9 @@ export const refreshAccessToken = async (
     const { refreshToken } = cookies;
     if (!refreshToken)
       throw new Util.ApiError("refreshToken missing (cookie)", 400);
-    const newAccessToken = await Service.refreshAccessTokenForUser(refreshToken);
+    const newAccessToken = await Service.refreshAccessTokenForUser(
+      refreshToken
+    );
     return res.status(200).send({
       newAccessToken,
     });
@@ -95,13 +101,15 @@ export const refreshAccessToken = async (
       next(new Util.ApiError("Refresh token is not yet active", 401));
     } else if (error instanceof Util.ApiError) {
       next(error);
+    } else if (error instanceof Error) {
+      next(new Util.ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new Util.ApiError("Unknown Error", 500));
     }
   }
 };
 
-export const enable2fa   = async (
+export const enable2fa = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -112,13 +120,17 @@ export const enable2fa   = async (
     const isEnabled = await Service.is2faEnabled(userId);
     if (isEnabled)
       return next(new Util.ApiError("The 2fa is already active.", 409));
-    const imgPng = await Service.generate2faQrCodeForUser(req.user as UserJwtPayload);
+    const imgPng = await Service.generate2faQrCodeForUser(
+      req.user as UserJwtPayload
+    );
     return res.status(200).send(imgPng);
   } catch (error) {
     if (error instanceof ServiceError.QrCodeGenerationError) {
       next(new Util.ApiError(error.message, 500));
     } else if (error instanceof Util.ApiError) {
       next(error);
+    } else if (error instanceof Error) {
+      next(new Util.ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new Util.ApiError("Unknown Error", 500));
     }
@@ -161,6 +173,8 @@ export const verify2fa = async (
       next(new Util.ApiError(error.message, 400));
     } else if (error instanceof Util.ApiError) {
       next(error);
+    } else if (error instanceof Error) {
+      next(new Util.ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new Util.ApiError("Unknown Error", 500));
     }

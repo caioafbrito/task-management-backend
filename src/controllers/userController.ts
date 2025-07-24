@@ -15,6 +15,8 @@ export const getData = async (
   } catch (error) {
     if (error instanceof UserNotFoundError) {
       next(new ApiError(error.message, 404));
+    } else if (error instanceof Error) {
+      next(new ApiError(error.message ?? "Unknown Error", 500));
     } else {
       next(new ApiError("Unknown Error", 500));
     }
