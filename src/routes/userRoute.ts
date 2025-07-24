@@ -1,9 +1,13 @@
 import { Router } from "express";
-import * as Middleware from "middlewares/index.js";
 import * as Controller from "controllers/userController.js";
+import passport from "passport";
 
 const router = Router();
 
-router.get("/user", Middleware.authCheck, Middleware.checkUserId, Controller.getData);
+router.get(
+  "/user",
+  passport.authenticate("bearer", { session: false }),
+  Controller.getData
+);
 
 export default router;

@@ -3,14 +3,20 @@ import * as UserError from "./userError.js";
 import * as UserDto from "dtos/user.dto.js";
 import bcrypt from "bcryptjs";
 
-export const findUserById = async (userId: number) => {
-  const user = await UserModel.findUserById(userId);
+export const findUserById = async (
+  userId: number,
+  showPrivateFields = false
+) => {
+  const user = await UserModel.findUserById(userId, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
 };
 
-export const findUserByEmail = async (email: string) => {
-  const user = await UserModel.findUserByEmail(email);
+export const findUserByEmail = async (
+  email: string,
+  showPrivateFields = false
+) => {
+  const user = await UserModel.findUserByEmail(email, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
 };
@@ -43,4 +49,3 @@ export const enable2faByUserId = async (userId: number) => {
 export const disable2faByUserId = async (userId: number) => {
   return await UserModel.update2faByUserId(userId, "disable");
 };
-

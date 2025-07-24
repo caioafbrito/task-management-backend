@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import type { CreateUser } from "dtos/user.dto.js";
 
 const publicFields = {
+  id: users.id,
   name: users.name,
   email: users.email,
   "2faEnabled": users["2faEnabled"],
@@ -12,17 +13,25 @@ const publicFields = {
   updatedAt: users.updatedAt,
 };
 
-export const findUserById = async (id: number) => {
+const privateFields = {
+  ...publicFields,
+  password: users.password,
+};
+
+export const findUserById = async (id: number, showPrivateFields = false) => {
   const [user] = await db
-    .select(publicFields)
+    .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
     .where(eq(users.id, id));
   return user;
 };
 
-export const findUserByEmail = async (email: string) => {
+export const findUserByEmail = async (
+  email: string,
+  showPrivateFields = false
+) => {
   const [user] = await db
-    .select(publicFields)
+    .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
     .where(eq(users.email, email));
   return user;

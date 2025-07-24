@@ -13,6 +13,8 @@ import path from "path";
 import YAML from "yaml";
 import swaggerUi from "swagger-ui-express";
 import { fileURLToPath } from "url";
+import passport from "passport";
+import "./auth/passport.js";
 
 // === Path Definitions ===
 const __filename = fileURLToPath(import.meta.url);
@@ -42,6 +44,9 @@ if (isProd) {
 // === Middlewares ===
 app.use(express.json());
 app.use(cors(), helmet(), cookieParser.default(), compression());
+
+// === Pre-auth config ===
+app.use(passport.initialize());
 
 // === Routers ===
 app.use(Routers);
