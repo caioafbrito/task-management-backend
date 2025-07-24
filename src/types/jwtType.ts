@@ -5,5 +5,4 @@ export interface UserJwtPayload {
   userName: string;
 }
 
-export interface UserJwt extends JwtPayload, UserJwtPayload {};
-
+export interface UserJwt extends JwtPayload, UserJwtPayload {}

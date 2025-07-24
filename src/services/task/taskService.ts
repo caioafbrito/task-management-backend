@@ -40,9 +40,6 @@ export const removeTaskByUserIdAndTaskId = async (
   userId: number,
   taskId: number
 ) => {
-  const result = await TaskModel.deleteTaskByUserIdAndTaskId(
-    userId,
-    taskId,
-  );
+  const result = await TaskModel.deleteTaskByUserIdAndTaskId(userId, taskId);
   return result.rowCount;
 };

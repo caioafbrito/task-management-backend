@@ -35,7 +35,10 @@ export const loginUser = async (authData: AuthenticateUser) => {
     };
   }
 
-  const { accessToken, refreshToken } = generateTokensForLogin(userName, userId);
+  const { accessToken, refreshToken } = generateTokensForLogin(
+    userName,
+    userId
+  );
 
   return {
     is2faRequired: false,
@@ -62,8 +65,8 @@ export const generateTokensForLogin = (userName: string, userId: number) => {
   );
   return {
     accessToken,
-    refreshToken
-  }
+    refreshToken,
+  };
 };
 
 export const refreshAccessTokenForUser = async (refreshToken: string) => {

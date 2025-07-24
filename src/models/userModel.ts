@@ -18,7 +18,10 @@ const privateFields = {
   password: users.password,
 };
 
-export const findUserById = async (id: number, showPrivateFields = false) => {
+export const findUserById = async (
+  id: number,
+  showPrivateFields: boolean = false
+) => {
   const [user] = await db
     .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
@@ -28,7 +31,7 @@ export const findUserById = async (id: number, showPrivateFields = false) => {
 
 export const findUserByEmail = async (
   email: string,
-  showPrivateFields = false
+  showPrivateFields: boolean = false
 ) => {
   const [user] = await db
     .select(showPrivateFields ? privateFields : publicFields)
