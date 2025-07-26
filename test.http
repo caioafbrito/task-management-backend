@@ -43,7 +43,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "code": "315160"
+    "code": "800135"
 }
 
 ###
@@ -60,16 +60,16 @@ POST {{apiUrl}}/auth/refresh-access-token
 
 ### Enable 2FA
 POST {{apiUrl}}/auth/2fa/enable
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjEsImlhdCI6MTc1MzUzNzY1NiwiZXhwIjoxNzUzNTM4MjU2fQ.BeyvcXci3qq9QpwiQoT0xac_jtPyzdvhD-sSCLoMnL8
 Content-Type: image/png
 
 ### Verify 2FA (setup proccess - while enabling)
 POST {{apiUrl}}/auth/2fa/setup/verify
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjEsImlhdCI6MTc1MzUzNzY1NiwiZXhwIjoxNzUzNTM4MjU2fQ.BeyvcXci3qq9QpwiQoT0xac_jtPyzdvhD-sSCLoMnL8
 Content-Type: application/json
 
 {
-    "code": "029785"
+    "code": "595748"
 }
 
 ### === TASK ENDPOINTS === ###

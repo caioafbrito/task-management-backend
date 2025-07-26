@@ -29,6 +29,17 @@ export const findUserById = async (
   return user;
 };
 
+export const findUserByGoogleId = async (
+  googleId: string,
+  showPrivateFields: boolean = false
+) => {
+  const [user] = await db
+    .select(showPrivateFields ? privateFields : publicFields)
+    .from(users)
+    .where(eq(users.googleId, googleId));
+  return user;
+};
+
 export const findUserByEmail = async (
   email: string,
   showPrivateFields: boolean = false
