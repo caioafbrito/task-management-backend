@@ -44,7 +44,7 @@ export const insertUser = async (userData: CreateUser) => {
   const [user] = await db
     .insert(users)
     .values(userData)
-    .returning({ userId: users.id, userName: users.name });
+    .returning(publicFields);
   return user;
 };
 

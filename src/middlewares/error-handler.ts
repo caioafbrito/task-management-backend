@@ -8,9 +8,10 @@ const errorHandler = (
   next: NextFunction
 ) => {
   const errorCode = error.code ?? 500;
+  if (errorCode == 500 && !error.message) console.error(error);
   const message =
     error.message ?? "Unknown Error in the last validation. Contact admin.";
-  if (errorCode == 500) console.error(error);
+
   return res.status(errorCode).json({
     message,
   });
