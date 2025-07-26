@@ -74,6 +74,27 @@ export const login = async (
   }
 };
 
+export const googleLoginCallback = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: userId, name: userName } = req.user;
+  const { accessToken, refreshToken } = Service.generateTokensForLogin(
+    userName,
+    userId
+  );
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 7 * 24 * 3600 * 1000,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  });
+  return res.status(200).send({
+    accessToken,
+  });
+};
+
 export const refreshAccessToken = async (
   req: Request,
   res: Response,

@@ -12,10 +12,11 @@ import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  googleId: text("google_id").default(""),
   name: varchar("name", { length: 255 }).notNull(),
-  age: integer("age").notNull(),
+  age: integer("age"),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"),
   "2faEnabled": boolean("2fa_enabled").notNull().default(false),
   "2faSecret": text("2fa_secret"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),

@@ -12,6 +12,15 @@ export const findUserById = async (
   return user;
 };
 
+export const findUserByGoogleId = async (
+  googleId: string,
+  showPrivateFields = false
+) => {
+  const user = await UserModel.findUserByGoogleId(googleId, showPrivateFields);
+  if (!user) throw new UserError.UserNotFoundError();
+  return user;
+};
+
 export const findUserByEmail = async (
   email: string,
   showPrivateFields = false
@@ -21,11 +30,17 @@ export const findUserByEmail = async (
   return user;
 };
 
-export const registerUser = async (userData: UserDto.CreateUser) => {
+export const registerUser = async (
+  userData: UserDto.CreateUser,
+  registerMode: "internal" | "google" = "internal"
+) => {
   const userWithSameEmail = await UserModel.findUserByEmail(userData.email);
   if (userWithSameEmail) throw new UserError.DuplicatedUserEmailError();
-  const hashedPassword = await bcrypt.hash(userData.password, 10);
-  const userToCreate = { ...userData, password: hashedPassword };
+  let userToCreate = { ...userData };
+  if (registerMode === "internal") {
+    const hashedPassword = await bcrypt.hash(userData.password!, 10);
+    userToCreate = { ...userData, password: hashedPassword };
+  }
   return await UserModel.insertUser(userToCreate);
 };
 
