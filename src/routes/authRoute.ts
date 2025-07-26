@@ -6,7 +6,26 @@ import passport from "passport";
 const router = Router();
 
 router.post("/register", AuthController.register);
+
+// Internal login
 router.post("/login", AuthController.login);
+
+// Google login
+router.get(
+  "/login/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  })
+);
+
+// Google callback
+router.get(
+  process.env.REDIRECT_PATH!,
+  passport.authenticate("google", { session: false }),
+  AuthController.googleLoginCallback
+);
+
 router.post("/refresh-access-token", AuthController.refreshAccessToken);
 
 // Protected JWT routes (middleware implementation)
