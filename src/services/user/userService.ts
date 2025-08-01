@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 export const findUserById = async (
   userId: number,
-  showPrivateFields = false
+  showPrivateFields?: false
 ) => {
   const user = await UserModel.findUserById(userId, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
@@ -14,21 +14,21 @@ export const findUserById = async (
 
 export const findUserByGoogleId = async (
   googleId: string,
-  showPrivateFields = false
+  showPrivateFields: boolean = false
 ) => {
   const user = await UserModel.findUserByGoogleId(googleId, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
 };
 
-export const findUserByEmail = async (
+export async function findUserByEmail(
   email: string,
-  showPrivateFields = false
-) => {
+  showPrivateFields: boolean = false
+): Promise<UserDto.UserPrivate | UserDto.UserPublic> {
   const user = await UserModel.findUserByEmail(email, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
   return user;
-};
+}
 
 export const registerUser = async (
   userData: UserDto.CreateUser,

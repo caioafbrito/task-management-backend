@@ -17,7 +17,7 @@ Content-Type: application/json
 {
     "name": "Vitor Muraoka",
     "age": 18,
-    "email": "vitor.muraoka2@developz.com.br",
+    "email": "vitor.muraoka3@developz.com.br",
     "password": "vitor123"
 }
 
@@ -27,8 +27,8 @@ POST {{apiUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "caio@mail.com",
-    "password": "12345"
+    "email": "vitor.muraoka3@developz.com.br",
+    "password": "vitor123"
 }
 
 ###
@@ -60,12 +60,12 @@ POST {{apiUrl}}/auth/refresh-access-token
 
 ### Enable 2FA
 POST {{apiUrl}}/auth/2fa/enable
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjEsImlhdCI6MTc1MzUzNzY1NiwiZXhwIjoxNzUzNTM4MjU2fQ.BeyvcXci3qq9QpwiQoT0xac_jtPyzdvhD-sSCLoMnL8
+Authorization: Bearer {{accessToken}}
 Content-Type: image/png
 
 ### Verify 2FA (setup proccess - while enabling)
 POST {{apiUrl}}/auth/2fa/setup/verify
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkNhaW8gQnJpdG8iLCJ1c2VySWQiOjEsImlhdCI6MTc1MzUzNzY1NiwiZXhwIjoxNzUzNTM4MjU2fQ.BeyvcXci3qq9QpwiQoT0xac_jtPyzdvhD-sSCLoMnL8
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 ### Specific Task
-GET {{apiUrl}}/task/12
+GET {{apiUrl}}/task/15
 Authorization: Bearer {{accessToken}}
 
 ### Task Creation
@@ -95,7 +95,7 @@ Content-Type: application/json
 }
 
 ### Task Update
-PUT {{apiUrl}}/task/12
+PUT {{apiUrl}}/task/16
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -104,7 +104,7 @@ Content-Type: application/json
 }
 
 ### Task Partial Update (change status)
-PATCH {{apiUrl}}/task/13
+PATCH {{apiUrl}}/task/16
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -113,7 +113,7 @@ Content-Type: application/json
 }
 
 ### Task Deletion 
-DELETE {{apiUrl}}/task/12
+DELETE {{apiUrl}}/task/15
 Authorization: Bearer {{accessToken}}
 
 ### === USER ENDPOINTS === ###

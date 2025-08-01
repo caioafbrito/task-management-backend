@@ -1,7 +1,7 @@
 import db from "../db/connection.js";
 import { users } from "db/schema.js";
 import { eq } from "drizzle-orm";
-import type { CreateUser } from "dtos/user.dto.js";
+import type { CreateUser, UserPublic, UserPrivate } from "dtos/user.dto.js";
 
 const publicFields = {
   id: users.id,
@@ -18,38 +18,50 @@ const privateFields = {
   password: users.password,
 };
 
-export const findUserById = async (
+export async function findUserById(
   id: number,
   showPrivateFields: boolean = false
-) => {
+) {
   const [user] = await db
     .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
     .where(eq(users.id, id));
-  return user;
-};
+  if (showPrivateFields) {
+    return user as UserPrivate | undefined;
+  } else {
+    return user as UserPublic | undefined;
+  }
+}
 
-export const findUserByGoogleId = async (
+export async function findUserByGoogleId(
   googleId: string,
   showPrivateFields: boolean = false
-) => {
+) {
   const [user] = await db
     .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
     .where(eq(users.googleId, googleId));
-  return user;
-};
+  if (showPrivateFields) {
+    return user as UserPrivate | undefined;
+  } else {
+    return user as UserPublic | undefined;
+  }
+}
 
-export const findUserByEmail = async (
+export async function findUserByEmail(
   email: string,
   showPrivateFields: boolean = false
-) => {
+) {
   const [user] = await db
     .select(showPrivateFields ? privateFields : publicFields)
     .from(users)
     .where(eq(users.email, email));
-  return user;
-};
+  if (showPrivateFields) {
+    return user as UserPrivate | undefined;
+  } else {
+    return user as UserPublic | undefined;
+  }
+}
 
 export const insertUser = async (userData: CreateUser) => {
   const [user] = await db
@@ -85,6 +97,6 @@ export const update2faByUserId = async (
 ) => {
   return await db
     .update(users)
-    .set({ "2faEnabled": true })
+    .set({ "2faEnabled": action === "enable" })
     .where(eq(users.id, userId));
 };

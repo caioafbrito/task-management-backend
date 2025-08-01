@@ -2,7 +2,7 @@ import * as Service from "../index.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import type { AuthenticateUser } from "dtos/user.dto.js";
+import type { AuthenticateUser, UserPrivate } from "dtos/user.dto.js";
 import { UserJwt, UserJwtPayload } from "types/jwtType.js";
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
@@ -14,7 +14,7 @@ export const loginUser = async (authData: AuthenticateUser) => {
     password: hashedPass,
     id: userId,
     name: userName,
-  } = await Service.findUserByEmail(email, true);
+  } = (await Service.findUserByEmail(email, true)) as UserPrivate;
 
   const isPassCorrect = await bcrypt.compare(password, hashedPass);
   if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
@@ -47,14 +47,13 @@ export const loginUser = async (authData: AuthenticateUser) => {
   };
 };
 
-
 export const loginGoogleUser = async (authData: AuthenticateUser) => {
   const { email, password } = authData;
   const {
     password: hashedPass,
     id: userId,
     name: userName,
-  } = await Service.findUserByEmail(email, true);
+  } = (await Service.findUserByEmail(email, true)) as UserPrivate;
 
   const isPassCorrect = await bcrypt.compare(password, hashedPass);
   if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
@@ -140,6 +139,7 @@ export const generate2faQrCodeForUser = async (jwtPayload: UserJwtPayload) => {
     const buffer = await qrcode.toBuffer(otpauth);
     return buffer;
   } catch (err) {
+    console.error(err);
     throw new AuthError.QrCodeGenerationError();
   }
 };
