@@ -1,4 +1,4 @@
-import * as Service from "../index.js";
+import * as Service from "services/index.js";
 import * as AuthError from "./authError.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";

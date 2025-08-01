@@ -1,4 +1,4 @@
-import db from "../db/connection.js";
+import db from "db/connection.js";
 import { tasks } from "db/schema.js";
 import { eq, sql, and } from "drizzle-orm";
 import type { CreateTaskPayload, UpdateTaskPayload } from "dtos/task.dto.js";

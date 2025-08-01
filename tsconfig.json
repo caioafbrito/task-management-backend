@@ -16,7 +16,18 @@
     "noImplicitAny": true,
     "isolatedModules": true,
     "allowJs": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "db/*": ["db/*"],
+      "models/*": ["models/*"],
+      "dtos/*": ["dtos/*"],
+      "controllers/*": ["controllers/*"],
+      "services/*": ["services/*"],
+      "routes/*": ["routes/*"],
+      "middlewares/*": ["middlewares/*"],
+      "types/*": ["types/*"],
+      "utils/*": ["utils/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

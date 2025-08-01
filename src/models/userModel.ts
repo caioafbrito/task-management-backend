@@ -1,4 +1,4 @@
-import db from "../db/connection.js";
+import db from "db/connection.js";
 import { users } from "db/schema.js";
 import { eq } from "drizzle-orm";
 import type { CreateUser, UserPublic, UserPrivate } from "dtos/user.dto.js";
