@@ -36,6 +36,6 @@ export const tasks = pgTable("tasks", {
     .references(() => users.id, { onDelete: "cascade" }),
 });
 
-export const usersRelations = relations(tasks, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   tasks: many(tasks),
 }));
