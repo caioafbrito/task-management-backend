@@ -1,4 +1,4 @@
-import { describe, expect, it, Mock, vi, beforeEach } from "vitest";
+import { describe, expect, it, type Mock, vi, beforeEach } from "vitest";
 import * as AuthService from "services/auth/authService.js";
 
 import * as Service from "services/index.js";
@@ -7,6 +7,9 @@ import * as AuthError from "services/auth/authError.js";
 import bcrypt from "bcryptjs";
 
 vi.mock("bcryptjs");
+vi.mock("services/index.js", () => ({
+  findUserByEmail: vi.fn(),
+}));
 
 describe("AuthService.loginUser", () => {
   beforeEach(() => {
@@ -30,6 +33,13 @@ describe("AuthService.loginUser", () => {
 
     await expect(AuthService.loginUser(authData)).rejects.toBeInstanceOf(
       AuthError.InvalidCredentialsError
+    );
+
+    // Just to make sure
+    expect(Service.findUserByEmail).toHaveBeenCalledWith(authData.email, true);
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      authData.password,
+      mockUser.password
     );
   });
 });
