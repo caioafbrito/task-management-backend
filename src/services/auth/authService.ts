@@ -47,45 +47,6 @@ export const loginUser = async (authData: AuthenticateUser) => {
   };
 };
 
-export const loginGoogleUser = async (authData: AuthenticateUser) => {
-  const { email, password } = authData;
-  const {
-    password: hashedPass,
-    id: userId,
-    name: userName,
-  } = (await Service.findUserByEmail(email, true)) as UserPrivate;
-
-  const isPassCorrect = await bcrypt.compare(password, hashedPass);
-  if (!isPassCorrect) throw new AuthError.InvalidCredentialsError();
-
-  const isEnabled = await Service.is2faEnabled(userId);
-
-  if (isEnabled) {
-    const authToken = jwt.sign(
-      { userName, userId },
-      process.env["2FA_TOKEN_SECRET"]!,
-      {
-        expiresIn: "1h",
-      }
-    );
-    return {
-      is2faRequired: true,
-      authToken,
-    };
-  }
-
-  const { accessToken, refreshToken } = Service.generateTokensForLogin(
-    userName,
-    userId
-  );
-
-  return {
-    is2faRequired: false,
-    accessToken,
-    refreshToken,
-  };
-};
-
 export const generateTokensForLogin = (userName: string, userId: number) => {
   const accessToken = jwt.sign(
     { userName, userId },
