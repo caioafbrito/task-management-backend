@@ -7,6 +7,9 @@ export default defineConfig({
     globals: true,
     include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
     setupFiles: ["src/setupTests.ts"],
+    coverage: {
+      provider: "v8",
+    },
   },
   plugins: [tsconfigPaths()],
 });

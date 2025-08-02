@@ -19,6 +19,7 @@ pids/
 
 # Local testing
 *.http
+coverage/
 
 # Optional npm cache directory
 .npm/
