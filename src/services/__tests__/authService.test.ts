@@ -12,6 +12,7 @@ vi.mock("jsonwebtoken");
 vi.mock("services/index.js", () => ({
   findUserByEmail: vi.fn(),
   is2faEnabled: vi.fn(),
+  generateTokensForLogin: vi.fn(),
 }));
 
 describe("AuthService.loginUser", () => {
@@ -75,6 +76,38 @@ describe("AuthService.loginUser", () => {
       {
         expiresIn: "1h",
       }
+    );
+  });
+
+  it("should return accessToken and refreshToken", async () => {
+    (Service.findUserByEmail as Mock).mockResolvedValueOnce(mockUser);
+    (bcrypt.compare as Mock).mockResolvedValueOnce(true);
+    (Service.is2faEnabled as Mock).mockResolvedValueOnce(false);
+    (Service.generateTokensForLogin as Mock).mockReturnValueOnce({
+      accessToken: "accessToken",
+      refreshToken: "refreshToken",
+    });
+
+    const authData = {
+      email: mockUser.email,
+      password: mockUser.password,
+    };
+
+    await expect(AuthService.loginUser(authData)).resolves.toEqual({
+      accessToken: "accessToken",
+      refreshToken: "refreshToken",
+      is2faRequired: false,
+    })
+
+    expect(Service.findUserByEmail).toHaveBeenCalledWith(authData.email, true);
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      authData.password,
+      mockUser.password
+    );
+    expect(Service.is2faEnabled).toHaveBeenCalledWith(mockUser.id);
+    expect(Service.generateTokensForLogin).toHaveBeenCalledWith(
+      mockUser.name,
+      mockUser.id
     );
   });
 });

@@ -35,7 +35,7 @@ export const loginUser = async (authData: AuthenticateUser) => {
     };
   }
 
-  const { accessToken, refreshToken } = generateTokensForLogin(
+  const { accessToken, refreshToken } = Service.generateTokensForLogin(
     userName,
     userId
   );
@@ -74,7 +74,7 @@ export const loginGoogleUser = async (authData: AuthenticateUser) => {
     };
   }
 
-  const { accessToken, refreshToken } = generateTokensForLogin(
+  const { accessToken, refreshToken } = Service.generateTokensForLogin(
     userName,
     userId
   );
