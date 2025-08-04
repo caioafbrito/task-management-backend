@@ -19,6 +19,7 @@ vi.mock("services/index.js", () => ({
   findUserById: vi.fn(),
   change2faSecret: vi.fn(),
   find2faSecretByUserId: vi.fn(),
+  enable2faByUserId: vi.fn(),
 }));
 
 vi.mock("utils/encrypt.js", () => ({
@@ -237,6 +238,34 @@ describe("AuthService.verify2fa", () => {
     );
   });
 
-  // maybe there is a misconception of the Service enabling 2fa and contacting database
-  it("")
+  it("should enable 2fa and complete successfully without returning anything", async () => {
+    const { id: userId } = mockUser;
+    const code = "VALID_CODE";
+
+    (Service.find2faSecretByUserId as Mock).mockResolvedValueOnce(
+      "ENCRYPTED_SECRET"
+    );
+    (EncryptUtil.decryptSecret as Mock).mockReturnValueOnce("PLAIN_SECRET");
+    (otp.authenticator.check as Mock).mockReturnValueOnce(true);
+    (Service.enable2faByUserId as Mock).mockResolvedValueOnce(undefined);
+
+    await expect(AuthService.verify2fa(userId, code)).resolves.toBeUndefined();
+
+    expect(Service.enable2faByUserId).toHaveBeenCalledWith(userId);
+  });
+
+  it("should verify 2fa and complete successfully without returning anything", async () => {
+    const { id: userId } = mockUser;
+    const code = "VALID_CODE";
+
+    (Service.find2faSecretByUserId as Mock).mockResolvedValueOnce(
+      "ENCRYPTED_SECRET"
+    );
+    (EncryptUtil.decryptSecret as Mock).mockReturnValueOnce("PLAIN_SECRET");
+    (otp.authenticator.check as Mock).mockReturnValueOnce(true);
+
+    await expect(
+      AuthService.verify2fa(userId, code, false)
+    ).resolves.toBeUndefined();
+  });
 });

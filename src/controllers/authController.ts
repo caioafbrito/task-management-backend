@@ -169,8 +169,9 @@ export const verify2fa = async (
     const result = Dto.MultipleFactorAuthDto.safeParse(body);
     if (!result.success)
       throw new Util.ApiError(fromZodError(result.error).toString(), 422);
-    await Service.verify2fa(userId, result.data.code);
+
     if (req.path === "/2fa/verify") {
+      await Service.verify2fa(userId, result.data.code, false);
       const { accessToken, refreshToken } = Service.generateTokensForLogin(
         userName,
         userId
@@ -185,6 +186,8 @@ export const verify2fa = async (
         accessToken,
       });
     } else {
+      // setup mode (user logged in)
+      await Service.verify2fa(userId, result.data.code);
       return res.status(204).send();
     }
   } catch (error) {

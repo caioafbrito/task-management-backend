@@ -105,10 +105,14 @@ export const generate2faQrCodeForUser = async (jwtPayload: UserJwtPayload) => {
   }
 };
 
-export const verify2fa = async (userId: number, code: string) => {
+export const verify2fa = async (
+  userId: number,
+  code: string,
+  setupMode: boolean = true
+): Promise<void> => {
   const encryptedSecret = await Service.find2faSecretByUserId(userId);
   const decryptedSecret = EncryptUtil.decryptSecret(encryptedSecret);
   const isValid = authenticator.check(code, decryptedSecret);
   if (!isValid) throw new AuthError.CodeNotValidError();
-  await Service.enable2faByUserId(userId);
+  if (setupMode) await Service.enable2faByUserId(userId);
 };
