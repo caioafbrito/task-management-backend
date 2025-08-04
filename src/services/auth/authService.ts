@@ -69,7 +69,7 @@ export const generateTokensForLogin = (userName: string, userId: number) => {
   };
 };
 
-export const refreshAccessTokenForUser = async (refreshToken: string) => {
+export const refreshAccessTokenForUser = (refreshToken: string) => {
   const { userId, userName } = jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET!
