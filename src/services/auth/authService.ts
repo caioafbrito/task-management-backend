@@ -100,7 +100,6 @@ export const generate2faQrCodeForUser = async (jwtPayload: UserJwtPayload) => {
     const buffer = await qrcode.toBuffer(otpauth);
     return buffer;
   } catch (err) {
-    console.error(err);
     throw new AuthError.QrCodeGenerationError();
   }
 };
