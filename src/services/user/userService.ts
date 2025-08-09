@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 export const findUserById = async (
   userId: number,
-  showPrivateFields?: false
+  showPrivateFields: boolean = false
 ) => {
   const user = await UserModel.findUserById(userId, showPrivateFields);
   if (!user) throw new UserError.UserNotFoundError();
