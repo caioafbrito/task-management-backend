@@ -11,6 +11,10 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  app:
+    image: task-management-backend:latest
+    env_file:
+      - .env.local
 volumes:
   db-data:
     driver: local
