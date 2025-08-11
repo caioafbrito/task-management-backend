@@ -11,10 +11,20 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s 
+      retries: 5
   app:
-    image: task-management-backend:latest
+    image: ghcr.io/caioafbrito/task-management-backend:latest
+    ports:
+      - "4000:4000"
     env_file:
-      - .env.local
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
   db-data:
     driver: local
