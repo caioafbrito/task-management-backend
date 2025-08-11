@@ -29,6 +29,6 @@
       "utils/*": ["utils/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/__tests__/unit/services/userService.unit.test.ts", "src/__tests__/unit/services/authService.unit.test.ts"],
   "exclude": ["node_modules", "dist"]
 }
