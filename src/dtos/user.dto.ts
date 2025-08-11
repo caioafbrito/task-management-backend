@@ -5,7 +5,7 @@ export const CreateUser = z.object({
   age: z.number().gt(0).optional(),
   email: z.email().max(255),
   password: z.string().optional(),
-  "2fa_enabled": z.boolean().optional().default(false),
+  "2faEnabled": z.boolean().optional().default(false),
   googleId: z.string().optional(),
 });
 
