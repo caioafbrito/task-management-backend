@@ -46,7 +46,7 @@ passport.use(
         if (error instanceof UserNotFoundError) {
           user = await registerUser(
             {
-              "2fa_enabled": false,
+              "2faEnabled": false,
               email: profile.emails?.find((email) => email)?.value ?? "",
               name: profile.displayName,
               googleId: profile.id,
