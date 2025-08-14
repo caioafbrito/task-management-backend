@@ -45,3 +45,6 @@ coverage/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Dev test
+docker-compose.dev.yaml

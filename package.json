@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@redocly/cli": "^1.34.5",
+    "@scalar/express-api-reference": "^0.8.13",
     "@types/swagger-ui-express": "^4.1.8",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
@@ -76,9 +77,8 @@
     "passport-http-bearer": "^1.0.1",
     "pg": "^8.16.3",
     "qrcode": "^1.5.4",
-    "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
-    "yaml": "^2.8.0",
+    "yaml": "^2.8.1",
     "zod": "^4.0.5",
     "zod-validation-error": "^3.5.3"
   }

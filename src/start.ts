@@ -1,19 +1,19 @@
 import { Application, json } from "express";
 import http from "http";
 import https from "https";
+import path from "path";
+import fs from "fs";
+import YAML from "yaml";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import * as cookieParser from "cookie-parser";
 import errorHandler from "middlewares/error-handler.js";
 import Routers from "./routes/index.js";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import YAML from "yaml";
-import swaggerUi from "swagger-ui-express";
 import passport from "passport";
 import "./auth/passport.js";
+import { fileURLToPath } from "url";
+import { apiReference } from "@scalar/express-api-reference";
 
 export function startApp(app: Application) {
   // === Path Definitions ===
@@ -22,11 +22,25 @@ export function startApp(app: Application) {
 
   // === Server Definitions ===
   const PORT = process.env.PORT ?? 3000;
-  const isProd = process.env.NODE_ENV === "prod";
+  const isProd = process.env.NODE_ENV === "production";
 
   // === Middlewares ===
   app.use(json());
   app.use(cors(), helmet(), cookieParser.default(), compression());
+
+  const allowedOrigins = isProd
+    ? ["'self'", "https://cdn.jsdelivr.net"] // add nonce here if possible
+    : ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"];
+  // Allow the CDN of Docs to inject script
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: allowedOrigins,
+        styleSrc: allowedOrigins,
+      },
+    })
+  );
 
   // === Pre-auth config ===
   app.use(passport.initialize());
@@ -38,10 +52,29 @@ export function startApp(app: Application) {
   app.use(errorHandler);
 
   // === Documentation ===
-  const openApiPath = path.join(__dirname, "..", "docs", "bundle.yaml");
-  const docFile = fs.readFileSync(openApiPath, "utf8");
-  const swaggerDocument = YAML.parse(docFile);
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  // Serve the OpenAPI spec as JSON dynamically
+  const openApiYamlPath = path.join(__dirname, "..", "docs", "bundle.yaml");
+
+  app.get("/openapi.json", (_, res) => {
+    try {
+      const yamlText = fs.readFileSync(openApiYamlPath, "utf8");
+      const jsonSpec = YAML.parse(yamlText);
+      res.json(jsonSpec);
+    } catch (err) {
+      console.error("Error reading OpenAPI YAML:", err);
+      res.status(500).json({ error: "Failed to load API specification" });
+    }
+  });
+
+  // Serve Scalar API reference docs
+  app.use(
+    "/reference",
+    apiReference({
+      theme: "fastify",
+      url: "/openapi.json", // uses the route above
+    })
+  );
 
   let server;
 
