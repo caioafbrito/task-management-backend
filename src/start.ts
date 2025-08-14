@@ -45,6 +45,8 @@ export function startApp(app: Application) {
 
   let server;
 
+  const isTest = process.env.NODE_ENV === "test";
+
   // === Choose HTTP for development, HTTPS for production ===
   if (isProd) {
     const sslKeyPath =
@@ -61,13 +63,11 @@ export function startApp(app: Application) {
   }
 
   // === Listen ===
-  server.listen(PORT, () => {
-    console.log(
-      isProd
-        ? `HTTPS server is listening on port ${PORT}`
-        : `HTTP server is listening on port ${PORT}`
-    );
-  });
+  if (!isTest) {
+    server.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`);
+    });
+  }
 
   // === Robust process error handling ===
   process.on("unhandledRejection", (reason, promise) => {
@@ -82,5 +82,8 @@ export function startApp(app: Application) {
     setTimeout(() => process.exit(1), 10 * 1000).unref();
   });
 
-  return app;
+  return {
+    app,
+    server,
+  };
 }

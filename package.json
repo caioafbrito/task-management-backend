@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest",
+    "test": "vitest run",
     "coverage": "vitest run --coverage && google-chrome coverage/task-management-backend/index.html",
     "build": "rimraf dist && tsup src/index.ts --format cjs,esm --minify --dts",
     "start": "tsx src/index.ts",
