@@ -1,7 +1,7 @@
 name: Continuous Integration Pipeline (CI) # Workflow Name => Pipeline CI
-on: 
+on:
   pull_request: # The Event
-    branches: ['main'] # The Conditions
+    branches: ["main"] # The Conditions
 jobs:
   continuous-int:
     runs-on: ubuntu-latest # The OS
@@ -12,12 +12,14 @@ jobs:
           node-version: 22.
       - name: Pull the Base Code # The Code Base (name)
         uses: actions/checkout@v3 # The Code Base (set of commands)
+      - name: Create .env file
+        run: |
+          echo "POSTGRES_VERSION_TAG=${{ secrets.POSTGRES_VERSION_TAG }}" >> .env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
       - name: Install Dependencies, Build and Test # The Commands [my set of commands (project-based), not third-party commands, like "actions/..."]
-        run: | # Because it's my commands, I'll not use "uses". Instead, I'll use "run". "|" is a YAML convention for multiline
+        run:
+          | # Because it's my commands, I'll not use "uses". Instead, I'll use "run". "|" is a YAML convention for multiline
           npm install
           npm run build
           npm test
-
-      
-
-    
