@@ -5,6 +5,7 @@ on:
 jobs:
   continuous-int:
     runs-on: ubuntu-latest # The OS
+    environment: CI Workflow # The Environment of Git Hub in Which my Secrets Will be Get From
     steps:
       - name: Node.js Setup # The Environment Dependencies (name)
         uses: actions/setup-node@v2 # The Environment Dependencies (action -> set of commands to setup the dependency)
