@@ -32,5 +32,7 @@ jobs:
           echo "REDIRECT_PATH=${{ secrets.REDIRECT_PATH }}" >> .env
           echo "BASE_API_PATH=${{ secrets.BASE_API_PATH }}" >> .env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "DB_RETRY_DELAY_MS=${{ secrets.DB_RETRY_DELAY_MS }}" >> .env
+          echo "DB_RETRY_ATTEMPTS=${{ secrets.DB_RETRY_ATTEMPTS }}" >> .env
       - name: Unit Tests & Integration Tests
         run: npm test
