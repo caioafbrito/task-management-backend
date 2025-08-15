@@ -50,7 +50,12 @@ beforeAll(async () => {
   const { pool: p, db } = await import("db/connection.js");
   pool = p;
 
-  await waitForDb(pool);
+  const environment = process.env.NODE_ENV;
+  await waitForDb(
+    pool,
+    environment === "gh-server" ? 60 : 30,
+    environment === "gh-server" ? 3000 : 2000
+  );
 
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
