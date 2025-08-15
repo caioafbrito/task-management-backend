@@ -1,10 +1,22 @@
-import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
+import type { Pool } from "pg";
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL!,
-});
+let _db: NodePgDatabase | undefined;
+let _pool: Pool | undefined;
 
-const db = drizzle(pool);
+// Can create in the first time, or just return.
+export function getDb(connectionString?: string): {
+  db: NodePgDatabase;
+  pool: Pool;
+} {
+  if (!_db || !_pool) {
+    const pool = new pg.Pool({
+      connectionString: connectionString || process.env.DATABASE_URL!,
+    });
+    _pool = pool;
+    _db = drizzle(pool);
+  }
 
-export { db, pool };
+  return { db: _db, pool: _pool };
+}

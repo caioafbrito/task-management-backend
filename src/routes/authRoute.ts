@@ -1,16 +1,14 @@
 import { Router } from "express";
-import * as AuthController from "controllers/authController.js";
+import { factory } from "../factory.js";
 import * as Middleware from "middlewares/index.js";
 import passport from "passport";
 
 const router = Router();
+const { authController } = factory.controllers;
 
-router.post("/register", AuthController.register);
+router.post("/register", authController.register);
+router.post("/login", authController.login);
 
-// Internal login
-router.post("/login", AuthController.login);
-
-// Google login
 router.get(
   "/login/google",
   passport.authenticate("google", {
@@ -19,33 +17,30 @@ router.get(
   })
 );
 
-// Google callback
 router.get(
   process.env.REDIRECT_PATH!,
-  passport.authenticate("google", { session: false }),
-  AuthController.googleLoginCallback
+  passport.authenticate("google", { session: false, failWithError: true }),
+  authController.googleLoginCallback
 );
 
-router.post("/refresh-access-token", AuthController.refreshAccessToken);
+router.post("/refresh-access-token", authController.refreshAccessToken);
 
-// Protected JWT routes (middleware implementation)
 router.post(
   "/2fa/verify",
   Middleware.multipleAuthCheck,
-  AuthController.verify2fa
+  authController.verify2fa
 );
 
-// Protected passport routes
 router.post(
   "/2fa/enable",
-  passport.authenticate("bearer", { session: false }),
-  AuthController.enable2fa
+  passport.authenticate("bearer", { session: false, failWithError: true }),
+  authController.enable2fa
 );
 
 router.post(
   "/2fa/setup/verify",
-  passport.authenticate("bearer", { session: false }),
-  AuthController.verify2fa
+  passport.authenticate("bearer", { session: false, failWithError: true }),
+  authController.verify2fa
 );
 
 export default router;

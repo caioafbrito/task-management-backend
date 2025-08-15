@@ -6,78 +6,82 @@ import {
 } from "@testcontainers/postgresql";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import pg from "pg";
-import { startApp } from "start.js";
+import { waitForDb } from "utils/tests.js";
 import request from "supertest";
-import express, { Application } from "express";
+import express from "express";
 import { Wait } from "testcontainers";
 import http from "http";
 import https from "https";
+
+import { factory } from "../../../factory.js";
 import { users } from "db/schema.js";
-import { waitForDb, getConnectionUrlFromContainer } from "utils/tests.js";
 import { CreateTask, UpdateTask } from "dtos/task.dto.js";
-import { UserPublic, CreateUser } from "dtos/user.dto.js";
+import type { UserPublic } from "dtos/user.dto.js";
 
 let container: StartedPostgreSqlContainer;
 let pool: pg.Pool;
-let app: Application;
+let app: express.Application;
 let server:
   | ReturnType<typeof http.createServer>
   | ReturnType<typeof https.createServer>;
 let agent: ReturnType<typeof request.agent>;
 
 const testUser = {
-  "2faEnabled": false,
-  email: "user_test@mail.com",
   name: "User Test",
+  email: "user_test@mail.com",
   password: "123",
+  "2faEnabled": false,
 };
 
 let userPublicData: UserPublic;
 
-const attempts = Number(process.env.DB_RETRY_ATTEMPTS!);
-const delayMs = Number(process.env.DB_RETRY_DELAY_MS!);
-const maxDelayAttemptsMs = attempts * delayMs;
+const attempts = Number(process.env.DB_RETRY_ATTEMPTS || 5);
+const delayMs = Number(process.env.DB_RETRY_DELAY_MS || 1000);
+const maxWaitMs = attempts * delayMs;
+
 beforeAll(async () => {
-  const tag = process.env.POSTGRES_VERSION_TAG;
+  const tag = process.env.POSTGRES_VERSION_TAG || "15-alpine";
   container = await new PostgreSqlContainer(`postgres:${tag}`)
+    .withUsername("user")
+    .withPassword("pass")
+    .withDatabase("test_db")
+    .withExposedPorts(5432)
     .withWaitStrategy(
       Wait.forLogMessage("database system is ready to accept connections")
     )
-    .withDatabase("test_db")
-    .withUsername("user")
-    .withPassword("pass")
     .start();
 
-  process.env.DATABASE_URL = getConnectionUrlFromContainer(container);
+  process.env.DATABASE_URL = container.getConnectionUri();
 
-  const { pool: p, db } = await import("db/connection.js");
+  const { pool: p, db } = await import("db/connection.js").then((m) =>
+    m.getDb(process.env.DATABASE_URL)
+  );
   pool = p;
 
   await waitForDb(pool, attempts, delayMs);
 
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
-    // console.log("Migration completed.");
   } catch (err) {
-    console.error("Failed to migrate", err);
+    console.error("Migration failed:", err);
   }
 
   await db.delete(users);
 
-  const { app: a, server: s } = startApp(express());
-  app = a;
-  server = s;
+  const { startApp } = await import("../../../start.js");
+  const appInit = startApp(express());
+  app = appInit.app;
+  server = appInit.server;
 
-  const { registerUser } = await import("services/user/userService.js");
+  const { userService } = factory.services;
   try {
-    const user = await registerUser(testUser);
-    // console.log("Test user registered", user);
+    await userService.registerUser(testUser);
   } catch (err) {
-    console.error("Failed to register test user", err);
+    console.error("Could not create test user:", err);
   }
 
-  agent = request.agent(app); // simulate a client with session (browser)
-}, 30_000 + maxDelayAttemptsMs);
+  agent = request.agent(app);
+}, maxWaitMs + 30000);
 
 afterAll(async () => {
   await pool.end();
@@ -86,98 +90,96 @@ afterAll(async () => {
 });
 
 describe("Tasks Module - User Workflow", () => {
-  let taskId1: number, taskId2: number;
-  it("should log the user in", async () => {
-    const authHeader = ["Authorization", "access_token_with_bearer"];
+  let taskId1: number;
+  let taskId2: number;
+
+  it("logs in user and stores auth token", async () => {
     const res = await agent
       .post("/api/v1/auth/login")
-      .send({
-        email: testUser.email,
-        password: testUser.password,
-      })
+      .send({ email: testUser.email, password: testUser.password })
       .expect(200);
+
     expect(res.body).toHaveProperty("accessToken");
-    authHeader[1] = `Bearer ${res.body.accessToken}`;
-    agent.set(...authHeader);
+
+    agent.set("Authorization", `Bearer ${res.body.accessToken}`);
   });
 
-  it("should get user public data", async () => {
-    const { body: userData }: { body: UserPublic } = await agent
-      .get("/api/v1/user")
-      .expect(200);
-    expect(userData).toBeDefined();
-    userPublicData = userData;
+  it("fetches user public data", async () => {
+    const res = await agent.get("/api/v1/user").expect(200);
+    const data = res.body as UserPublic;
+    expect(data).toBeDefined();
+    userPublicData = data;
   });
 
-  it("should create a task", async () => {
+  it("creates first task", async () => {
     const { body } = await agent
       .post("/api/v1/task")
       .send({
-        title: "Test Task",
+        title: "Task One",
+        description: "First Task",
         isDone: true,
-        description: "This is a task created for test purpose.",
       } as CreateTask)
       .expect(201);
+
+    expect(body).toHaveProperty("id");
     taskId1 = body.id;
   });
 
-  it("should create another task", async () => {
+  it("creates second task", async () => {
     const { body } = await agent
       .post("/api/v1/task")
       .send({
-        title: "Test Task 2",
+        title: "Task Two",
+        description: "Second Task",
         isDone: true,
-        description: "This is the second task created for test purpose.",
       } as CreateTask)
       .expect(201);
+
+    expect(body).toHaveProperty("id");
     taskId2 = body.id;
   });
 
-  it("should list all tasks", async () => {
-    const { body } = await agent.get("/api/v1/task").expect(200);
-    expect(body).toHaveLength(2);
+  it("lists all tasks", async () => {
+    const res = await agent.get("/api/v1/task").expect(200);
+    expect(res.body).toHaveLength(2);
   });
 
-  it("should update the first task as a whole", async () => {
+  it("updates first task fully", async () => {
     const { body } = await agent
       .put(`/api/v1/task/${taskId1}`)
       .send({
-        description: "This is another description",
-        title: "This is another title",
+        title: "Updated Task One",
+        description: "Updated Desc",
         dueDate: "2025-12-30",
       } as UpdateTask)
       .expect(200);
+
     expect(body).toBeDefined();
   });
 
-  it("should update the status of the second task", async () => {
+  it("updates second task status", async () => {
     await agent
       .patch(`/api/v1/task/${taskId2}`)
-      .send({
-        isDone: true,
-      })
+      .send({ isDone: false })
       .expect(204);
   });
 
-  it("should remove the first task", async () => {
+  it("deletes first task", async () => {
     await agent.delete(`/api/v1/task/${taskId1}`).expect(204);
   });
 
-  it("should list all tasks (now retuning just 1)", async () => {
-    const { body } = await agent.get("/api/v1/task").expect(200);
-    expect(body).toHaveLength(1);
+  it("lists remaining tasks", async () => {
+    const res = await agent.get("/api/v1/task").expect(200);
+    expect(res.body).toHaveLength(1);
   });
 });
 
-describe("GET /api/v1/task ", () => {
-  it("should return 401 if not authenticated", async () => {
+describe("Unauthenticated access", () => {
+  it("rejects unauthenticated task list", async () => {
     await request(app).get("/api/v1/task").expect(401);
   });
 
-  it("should list all if is authenticated", async () => {
-    await agent
-      .get("/api/v1/task")
-      .expect(200)
-      .expect((res) => expect(res.body).toBeDefined());
+  it("allows authenticated task list", async () => {
+    await agent.get("/api/v1/task").expect(200);
   });
 });

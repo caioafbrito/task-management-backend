@@ -1,45 +1,51 @@
 import * as TaskDto from "dtos/task.dto.js";
-import * as TaskModel from "models/taskModel.js";
 
-export const listTasksByUserId = async (userId: number) => {
-  return await TaskModel.getTasksByUserId(userId);
-};
+export function createTaskService(
+  taskModel: ReturnType<typeof import("models/taskModel.js").createTaskModel>
+) {
+  async function listTasksByUserId(userId: number) {
+    return await taskModel.getTasksByUserId(userId);
+  }
 
-export const listTasksByUserIdAndTaskId = async (
-  userId: number,
-  taskId: number
-) => {
-  return await TaskModel.getTaskByUserIdAndTaskId(userId, taskId);
-};
+  async function listTasksByUserIdAndTaskId(userId: number, taskId: number) {
+    return await taskModel.getTaskByUserIdAndTaskId(userId, taskId);
+  }
 
-export const createTask = async (task: TaskDto.CreateTaskPayload) => {
-  return await TaskModel.insertTask(task);
-};
+  async function createTask(task: TaskDto.CreateTaskPayload) {
+    return await taskModel.insertTask(task);
+  }
 
-export const updateTaskByTaskId = async (
-  taskId: number,
-  task: TaskDto.UpdateTaskPayload
-) => {
-  return await TaskModel.updateTaskByTaskId(taskId, task);
-};
+  async function updateTaskByTaskId(
+    taskId: number,
+    task: TaskDto.UpdateTaskPayload
+  ) {
+    return await taskModel.updateTaskByTaskId(taskId, task);
+  }
 
-export const changeTaskStatusByUserIdAndTaskId = async (
-  userId: number,
-  taskId: number,
-  isDone: boolean
-) => {
-  const result = await TaskModel.updateTaskStatusByUserIdAndTaskId(
-    userId,
-    taskId,
-    isDone
-  );
-  return result.rowCount;
-};
+  async function changeTaskStatusByUserIdAndTaskId(
+    userId: number,
+    taskId: number,
+    isDone: boolean
+  ) {
+    const result = await taskModel.updateTaskStatusByUserIdAndTaskId(
+      userId,
+      taskId,
+      isDone
+    );
+    return result.rowCount;
+  }
 
-export const removeTaskByUserIdAndTaskId = async (
-  userId: number,
-  taskId: number
-) => {
-  const result = await TaskModel.deleteTaskByUserIdAndTaskId(userId, taskId);
-  return result.rowCount;
-};
+  async function removeTaskByUserIdAndTaskId(userId: number, taskId: number) {
+    const result = await taskModel.deleteTaskByUserIdAndTaskId(userId, taskId);
+    return result.rowCount;
+  }
+
+  return {
+    listTasksByUserId,
+    listTasksByUserIdAndTaskId,
+    createTask,
+    updateTaskByTaskId,
+    changeTaskStatusByUserIdAndTaskId,
+    removeTaskByUserIdAndTaskId,
+  };
+}

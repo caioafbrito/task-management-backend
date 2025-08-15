@@ -1,20 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 
-// Global Error Handler Middleware
 const errorHandler = (
   error: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const errorCode = error.code ?? 500;
-  if (errorCode == 500 && !error.message) console.error(error);
-  const message =
-    error.message ?? "Unknown Error in the last validation. Contact admin.";
+  if (
+    error.name === "AuthenticationError" ||
+    error.name === "Unauthorized" ||
+    error.name === "UnauthorizedError" ||
+    error.name === "TokenExpiredError" ||
+    error.name === "JsonWebTokenError" ||
+    error.name === "NotBeforeError"
+  ) {
+    return res.status(401).json({ message: error.message || "Unauthorized" });
+  }
 
-  return res.status(errorCode).json({
-    message,
-  });
+  const statusCode = error.code ?? 500;
+  if (statusCode === 500 && !error.message) console.error(error);
+
+  const message = error.message ?? "Unknown Error";
+
+  return res.status(statusCode).json({ message });
 };
 
 export default errorHandler;

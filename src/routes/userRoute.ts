@@ -1,13 +1,14 @@
 import { Router } from "express";
-import * as Controller from "controllers/userController.js";
+import { factory } from "../factory.js";
 import passport from "passport";
 
 const router = Router();
+const { userController } = factory.controllers;
 
 router.get(
   "/user",
-  passport.authenticate("bearer", { session: false }),
-  Controller.getData
+  passport.authenticate("bearer", { session: false, failWithError: true }),
+  userController.getData
 );
 
 export default router;
