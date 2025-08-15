@@ -1,14 +1,12 @@
 import passport from "passport";
 import { Strategy as BearerStrategy } from "passport-http-bearer";
 import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
-import {
-  findUserById,
-  findUserByGoogleId,
-  registerUser,
-} from "services/index.js";
+import { factory } from "../factory.js";
 import jwt from "jsonwebtoken";
 import { UserJwtPayload } from "types/jwtType.js";
 import { UserNotFoundError } from "services/indexError.js";
+
+const { userService } = factory.services;
 
 passport.use(
   new BearerStrategy(async (token, done) => {
@@ -17,7 +15,7 @@ passport.use(
         token,
         process.env.ACCESS_TOKEN_SECRET!
       ) as UserJwtPayload;
-      const user = await findUserById(payload.userId);
+      const user = await userService.findUserById(payload.userId);
       if (!user) throw new UserNotFoundError();
       done(null, payload);
     } catch (error) {
@@ -41,10 +39,10 @@ passport.use(
     ) => {
       let user;
       try {
-        user = await findUserByGoogleId(profile.id);
+        user = await userService.findUserByGoogleId(profile.id);
       } catch (error) {
         if (error instanceof UserNotFoundError) {
-          user = await registerUser(
+          user = await userService.registerUser(
             {
               "2faEnabled": false,
               email: profile.emails?.find((email) => email)?.value ?? "",

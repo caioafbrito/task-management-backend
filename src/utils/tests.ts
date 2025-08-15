@@ -18,9 +18,3 @@ export async function waitForDb(
   }
   throw new Error("Timeout waiting for database to be ready");
 }
-
-export function getConnectionUrlFromContainer(
-  container: StartedPostgreSqlContainer
-): string {
-  return `postgresql://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`;
-}

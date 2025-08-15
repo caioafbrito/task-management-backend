@@ -1,12 +1,11 @@
-import { describe, it, vi, beforeEach, Mock, expect } from "vitest";
-import * as UserService from "services/user/userService.js";
+import { describe, it, vi, beforeEach, type Mock, expect } from "vitest";
+import { createUserService } from "services/user/userService.js";
 import * as UserError from "services/user/userError.js";
-
-import * as UserModel from "models/userModel.js";
 import bcrypt from "bcryptjs";
 
 vi.mock("bcryptjs");
-vi.mock("models/userModel.js", () => ({
+
+const mockUserModel = {
   findUserById: vi.fn(),
   findUserByGoogleId: vi.fn(),
   findUserByEmail: vi.fn(),
@@ -14,7 +13,9 @@ vi.mock("models/userModel.js", () => ({
   update2faSecretByUserId: vi.fn(),
   find2faSecretByUserId: vi.fn(),
   update2faByUserId: vi.fn(),
-}));
+};
+
+const userService = createUserService(mockUserModel);
 
 const mockUser = {
   id: 1,
@@ -26,109 +27,104 @@ const mockUser = {
   "2faEnabled": true,
 };
 
-describe("UserService.findUserById", () => {
+describe("UserService - findUserById", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should throw UserNotFoundError", async () => {
-    (UserModel.findUserById as Mock).mockResolvedValueOnce(undefined);
+  it("throws UserNotFoundError if user not found by ID", async () => {
+    (mockUserModel.findUserById as Mock).mockResolvedValueOnce(undefined);
 
-    await expect(UserService.findUserById(mockUser.id, true)).rejects.Throw(
+    await expect(userService.findUserById(mockUser.id, true)).rejects.toThrow(
       UserError.UserNotFoundError
     );
-
-    expect(UserModel.findUserById).toHaveBeenCalledWith(mockUser.id, true);
+    expect(mockUserModel.findUserById).toHaveBeenCalledWith(mockUser.id, true);
   });
 
-  it("should return the user", async () => {
-    (UserModel.findUserById as Mock).mockResolvedValueOnce(mockUser);
+  it("returns user when found by ID", async () => {
+    (mockUserModel.findUserById as Mock).mockResolvedValueOnce(mockUser);
 
-    await expect(UserService.findUserById(mockUser.id, true)).resolves.toBe(
+    await expect(userService.findUserById(mockUser.id, true)).resolves.toBe(
       mockUser
     );
-
-    expect(UserModel.findUserById).toHaveBeenCalledWith(mockUser.id, true);
+    expect(mockUserModel.findUserById).toHaveBeenCalledWith(mockUser.id, true);
   });
 });
 
-describe("UserService.findUserByGoogleId", () => {
+describe("UserService - findUserByGoogleId", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should throw UserNotFoundError", async () => {
-    (UserModel.findUserByGoogleId as Mock).mockResolvedValueOnce(undefined);
+  it("throws UserNotFoundError if user not found by Google ID", async () => {
+    (mockUserModel.findUserByGoogleId as Mock).mockResolvedValueOnce(undefined);
 
     await expect(
-      UserService.findUserByGoogleId(mockUser.googleId, true)
-    ).rejects.Throw(UserError.UserNotFoundError);
-
-    expect(UserModel.findUserByGoogleId).toHaveBeenCalledWith(
+      userService.findUserByGoogleId(mockUser.googleId, true)
+    ).rejects.toThrow(UserError.UserNotFoundError);
+    expect(mockUserModel.findUserByGoogleId).toHaveBeenCalledWith(
       mockUser.googleId,
       true
     );
   });
 
-  it("should return the user", async () => {
-    (UserModel.findUserByGoogleId as Mock).mockResolvedValueOnce(mockUser);
+  it("returns user when found by Google ID", async () => {
+    (mockUserModel.findUserByGoogleId as Mock).mockResolvedValueOnce(mockUser);
 
     await expect(
-      UserService.findUserByGoogleId(mockUser.googleId, true)
+      userService.findUserByGoogleId(mockUser.googleId, true)
     ).resolves.toBe(mockUser);
-
-    expect(UserModel.findUserByGoogleId).toHaveBeenCalledWith(
+    expect(mockUserModel.findUserByGoogleId).toHaveBeenCalledWith(
       mockUser.googleId,
       true
     );
   });
 });
 
-describe("UserService.findUserByEmail", () => {
+describe("UserService - findUserByEmail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should throw UserNotFoundError", async () => {
-    (UserModel.findUserByEmail as Mock).mockResolvedValueOnce(undefined);
+  it("throws UserNotFoundError if user not found by email", async () => {
+    (mockUserModel.findUserByEmail as Mock).mockResolvedValueOnce(undefined);
 
-    await expect(UserService.findUserByEmail(mockUser.email)).rejects.Throw(
+    await expect(userService.findUserByEmail(mockUser.email)).rejects.toThrow(
       UserError.UserNotFoundError
     );
-
-    expect(UserModel.findUserByEmail).toHaveBeenCalledWith(
+    expect(mockUserModel.findUserByEmail).toHaveBeenCalledWith(
       mockUser.email,
       false
     );
   });
 
-  it("should return the user", async () => {
-    (UserModel.findUserByEmail as Mock).mockResolvedValueOnce(mockUser);
+  it("returns user when found by email", async () => {
+    (mockUserModel.findUserByEmail as Mock).mockResolvedValueOnce(mockUser);
 
-    await expect(UserService.findUserByEmail(mockUser.email)).resolves.toBe(
+    await expect(userService.findUserByEmail(mockUser.email)).resolves.toBe(
       mockUser
     );
-
-    expect(UserModel.findUserByEmail).toHaveBeenCalledWith(
+    expect(mockUserModel.findUserByEmail).toHaveBeenCalledWith(
       mockUser.email,
       false
     );
   });
 });
 
-describe("UserService.registerUser", () => {
+describe("UserService - registerUser", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should throw DuplicatedUserEmailError", async () => {
-    (UserModel.findUserByEmail as Mock).mockResolvedValueOnce({
+  it("throws DuplicatedUserEmailError if email already exists", async () => {
+    (mockUserModel.findUserByEmail as Mock).mockResolvedValueOnce({
       ...mockUser,
       name: "Other User",
     });
-    await expect(UserService.registerUser(mockUser)).rejects.Throw(
+
+    await expect(userService.registerUser(mockUser)).rejects.toThrow(
       UserError.DuplicatedUserEmailError
     );
-    expect(UserModel.findUserByEmail).toHaveBeenCalledWith(mockUser.email);
+    expect(mockUserModel.findUserByEmail).toHaveBeenCalledWith(mockUser.email);
   });
 });
