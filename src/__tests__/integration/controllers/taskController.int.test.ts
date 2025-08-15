@@ -50,13 +50,12 @@ beforeAll(async () => {
   const { pool: p, db } = await import("db/connection.js");
   pool = p;
 
-  const environment = process.env.NODE_ENV;
-  const dbRetries = environment === "gh-server" ? 60 : 30;
-  const retryDelayMs = environment === "gh-server" ? 3000 : 2000;
+  const attempts = Number(process.env.DB_RETRY_ATTEMPTS!);
+  const delayMs = Number(process.env.DB_RETRY_DELAY_MS!);
 
-  console.log(environment, dbRetries, retryDelayMs);
+  console.log(attempts, delayMs);
 
-  await waitForDb(pool, dbRetries, retryDelayMs);
+  await waitForDb(pool, attempts, delayMs);
 
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
