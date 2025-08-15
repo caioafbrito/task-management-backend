@@ -4,7 +4,7 @@ on:
     branches: ["main"] # The Conditions
 jobs:
   continuous-int:
-    runs-on: ubuntu-latest # The OS
+    runs-on: self-hosted # The OS (Linux Debian, instancia-developz)
     environment: CI Workflow # The Environment of Git Hub in Which my Secrets Will be Get From
     steps:
       - name: Node.js Setup # The Environment Dependencies (name)
