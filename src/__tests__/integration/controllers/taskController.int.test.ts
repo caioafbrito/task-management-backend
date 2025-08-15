@@ -51,11 +51,12 @@ beforeAll(async () => {
   pool = p;
 
   const environment = process.env.NODE_ENV;
-  await waitForDb(
-    pool,
-    environment === "gh-server" ? 60 : 30,
-    environment === "gh-server" ? 3000 : 2000
-  );
+  const dbRetries = environment === "gh-server" ? 60 : 30;
+  const retryDelayMs = environment === "gh-server" ? 3000 : 2000;
+
+  console.log(environment, dbRetries, retryDelayMs);
+
+  await waitForDb(pool, dbRetries, retryDelayMs);
 
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
@@ -183,4 +184,3 @@ describe("GET /api/v1/task ", () => {
       .expect((res) => expect(res.body).toBeDefined());
   });
 });
-
