@@ -1,0 +1,23 @@
+name: Continuous Integration Pipeline (CI) # Workflow Name => Pipeline CI
+on: 
+  pull_request: # The Event
+    branches: ['main'] # The Conditions
+jobs:
+  continuous-int:
+    runs-on: ubuntu-latest # The OS
+    steps:
+      - name: Node.js Setup # The Environment Dependencies (name)
+        uses: actions/setup-node@v2 # The Environment Dependencies (action -> set of commands to setup the dependency)
+        with: # The Environment Dependencies (arguments -> to run with the commands)
+          node-version: 22.
+      - name: Pull the Base Code # The Code Base (name)
+        uses: actions/checkout@v3 # The Code Base (set of commands)
+      - name: Install Dependencies, Build and Test # The Commands [my set of commands (project-based), not third-party commands, like "actions/..."]
+        run: | # Because it's my commands, I'll not use "uses". Instead, I'll use "run". "|" is a YAML convention for multiline
+          npm install
+          npm run build
+          npm test
+
+      
+
+    
