@@ -34,6 +34,9 @@ const testUser = {
 
 let userPublicData: UserPublic;
 
+const attempts = Number(process.env.DB_RETRY_ATTEMPTS!);
+const delayMs = Number(process.env.DB_RETRY_DELAY_MS!);
+const maxDelayAttemptsMs = attempts * delayMs;
 beforeAll(async () => {
   const tag = process.env.POSTGRES_VERSION_TAG;
   container = await new PostgreSqlContainer(`postgres:${tag}`)
@@ -49,11 +52,6 @@ beforeAll(async () => {
 
   const { pool: p, db } = await import("db/connection.js");
   pool = p;
-
-  const attempts = Number(process.env.DB_RETRY_ATTEMPTS!);
-  const delayMs = Number(process.env.DB_RETRY_DELAY_MS!);
-
-  console.log(attempts, delayMs);
 
   await waitForDb(pool, attempts, delayMs);
 
@@ -79,7 +77,7 @@ beforeAll(async () => {
   }
 
   agent = request.agent(app); // simulate a client with session (browser)
-}, 90_000);
+}, 30_000 + maxDelayAttemptsMs);
 
 afterAll(async () => {
   await pool.end();
