@@ -20,9 +20,17 @@ jobs:
           npm run build
       - name: Setup .env file
         run: |
+          rm -f .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "POSTGRES_VERSION_TAG=${{ secrets.POSTGRES_VERSION_TAG }}" >> .env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
           echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
+          echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
+          echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> .env
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
+          echo "REDIRECT_PATH=${{ secrets.REDIRECT_PATH }}" >> .env
+          echo "BASE_API_PATH=${{ secrets.BASE_API_PATH }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
       - name: Unit Tests & Integration Tests
         run: npm test
