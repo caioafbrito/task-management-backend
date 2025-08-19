@@ -4,19 +4,23 @@ import type { Pool } from "pg";
 
 let _db: NodePgDatabase | undefined;
 let _pool: Pool | undefined;
+let _lastConnectionString: string | undefined;
 
-// Can create in the first time, or just return.
 export function getDb(connectionString?: string): {
   db: NodePgDatabase;
   pool: Pool;
 } {
-  if (!_db || !_pool) {
+  const connStr = connectionString || process.env.DATABASE_URL!;
+  if (!_db || !_pool || _lastConnectionString !== connStr) {
+    if (_pool) {
+      _pool.end(); // close past connections
+    }
     const pool = new pg.Pool({
-      connectionString: connectionString || process.env.DATABASE_URL!,
+      connectionString: connStr,
     });
     _pool = pool;
     _db = drizzle(pool);
+    _lastConnectionString = connStr;
   }
-
   return { db: _db, pool: _pool };
 }
