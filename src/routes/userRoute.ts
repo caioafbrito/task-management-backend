@@ -1,13 +1,18 @@
 import { Router } from "express";
-import * as Controller from "controllers/userController.js";
 import passport from "passport";
 
-const router = Router();
+export function createUserRouter(
+  userController: ReturnType<
+    typeof import("../factory.js").createFactory
+  >["controllers"]["userController"]
+) {
+  const router = Router();
 
-router.get(
-  "/user",
-  passport.authenticate("bearer", { session: false }),
-  Controller.getData
-);
+  router.get(
+    "/",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    userController.getData
+  );
 
-export default router;
+  return router;
+}

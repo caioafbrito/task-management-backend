@@ -1,51 +1,50 @@
 import { Router } from "express";
-import * as AuthController from "controllers/authController.js";
 import * as Middleware from "middlewares/index.js";
 import passport from "passport";
 
-const router = Router();
+export function createAuthRouter(
+  authController: ReturnType<
+    typeof import("../factory.js").createFactory
+  >["controllers"]["authController"]
+) {
+  const router = Router();
 
-router.post("/register", AuthController.register);
+  router.post("/register", authController.register);
+  router.post("/login", authController.login);
 
-// Internal login
-router.post("/login", AuthController.login);
+  router.get(
+    "/login/google",
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      session: false,
+    })
+  );
 
-// Google login
-router.get(
-  "/login/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    session: false,
-  })
-);
+  router.get(
+    process.env.REDIRECT_PATH!,
+    passport.authenticate("google", { session: false, failWithError: true }),
+    authController.googleLoginCallback
+  );
 
-// Google callback
-router.get(
-  process.env.REDIRECT_PATH!,
-  passport.authenticate("google", { session: false }),
-  AuthController.googleLoginCallback
-);
+  router.post("/refresh-access-token", authController.refreshAccessToken);
 
-router.post("/refresh-access-token", AuthController.refreshAccessToken);
+  router.post(
+    "/2fa/verify",
+    Middleware.multipleAuthCheck,
+    authController.verify2fa
+  );
 
-// Protected JWT routes (middleware implementation)
-router.post(
-  "/2fa/verify",
-  Middleware.multipleAuthCheck,
-  AuthController.verify2fa
-);
+  router.post(
+    "/2fa/enable",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    authController.enable2fa
+  );
 
-// Protected passport routes
-router.post(
-  "/2fa/enable",
-  passport.authenticate("bearer", { session: false }),
-  AuthController.enable2fa
-);
+  router.post(
+    "/2fa/setup/verify",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    authController.verify2fa
+  );
 
-router.post(
-  "/2fa/setup/verify",
-  passport.authenticate("bearer", { session: false }),
-  AuthController.verify2fa
-);
-
-export default router;
+  return router;
+}

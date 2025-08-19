@@ -1,43 +1,48 @@
 import { Router } from "express";
-import * as TaskController from "controllers/taskController.js";
 import passport from "passport";
 
-const router = Router();
+export function createTaskRouter(
+  taskController: ReturnType<
+    typeof import("../factory.js").createFactory
+  >["controllers"]["taskController"]
+) {
+  const router = Router();
 
-router.get(
-  "/task",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.getAllTasks
-);
+  router.get(
+    "/",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.getAllTasks
+  );
 
-router.get(
-  "/task/:taskId",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.getTask
-);
+  router.get(
+    "/:taskId",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.getTask
+  );
 
-router.post(
-  "/task",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.postTask
-);
+  router.post(
+    "/",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.postTask
+  );
 
-router.put(
-  "/task/:taskId",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.putTask
-);
+  router.put(
+    "/:taskId",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.putTask
+  );
 
-router.patch(
-  "/task/:taskId",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.patchTaskStatus
-);
+  router.patch(
+    "/:taskId",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.patchTaskStatus
+  );
 
-router.delete(
-  "/task/:taskId",
-  passport.authenticate("bearer", { session: false }),
-  TaskController.deleteTask
-);
+  router.delete(
+    "/:taskId",
+    passport.authenticate("bearer", { session: false, failWithError: true }),
+    taskController.deleteTask
+  );
 
-export default router;
+  return router;
+}
