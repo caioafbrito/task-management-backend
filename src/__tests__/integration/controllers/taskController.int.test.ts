@@ -12,7 +12,6 @@ import express from "express";
 import { Wait } from "testcontainers";
 import http from "http";
 import https from "https";
-
 import { factory } from "../../../factory.js";
 import { users } from "db/schema.js";
 import { CreateTask, UpdateTask } from "dtos/task.dto.js";
@@ -52,6 +51,7 @@ beforeAll(async () => {
     .start();
 
   process.env.DATABASE_URL = container.getConnectionUri();
+  console.log(process.env.DATABASE_URL);
 
   const { pool: p, db } = await import("db/connection.js").then((m) =>
     m.getDb(process.env.DATABASE_URL)
