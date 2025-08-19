@@ -9,11 +9,11 @@ import helmet from "helmet";
 import compression from "compression";
 import * as cookieParser from "cookie-parser";
 import errorHandler from "middlewares/error-handler.js";
-import Routers from "./routes/index.js";
-import passport from "passport";
-import "./auth/passport.js";
+import { createFactory } from "factory.js";
+import { createRouters } from "./routes/index.js";
 import { fileURLToPath } from "url";
 import { apiReference } from "@scalar/express-api-reference";
+import { configurePassport } from "./auth/passport.js";
 
 export function startApp(app: Application) {
   // === Path Definitions ===
@@ -42,11 +42,15 @@ export function startApp(app: Application) {
     })
   );
 
+  // Dependency injection using factory
+  const factory = createFactory();
+
   // === Pre-auth config ===
+  const passport = configurePassport(factory);
   app.use(passport.initialize());
 
   // === Routers ===
-  app.use(Routers);
+  app.use(createRouters(factory));
 
   // === Error Handling ===
   app.use(errorHandler);

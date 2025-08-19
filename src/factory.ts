@@ -36,7 +36,7 @@ function buildFactory(db: DbInstance) {
   };
 }
 
-const db = getDbForEnv();
-export const factory = buildFactory(db);
-
-export { buildFactory };
+export function createFactory() {
+  const db = getDbForEnv();
+  return buildFactory(db);
+}

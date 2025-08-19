@@ -12,7 +12,7 @@ import express from "express";
 import { Wait } from "testcontainers";
 import http from "http";
 import https from "https";
-import { factory } from "../../../factory.js";
+import { createFactory } from "../../../factory.js";
 import { users } from "db/schema.js";
 import { CreateTask, UpdateTask } from "dtos/task.dto.js";
 import type { UserPublic } from "dtos/user.dto.js";
@@ -73,6 +73,7 @@ beforeAll(async () => {
   app = appInit.app;
   server = appInit.server;
 
+  const factory = createFactory();
   const { userService } = factory.services;
   try {
     await userService.registerUser(testUser);
